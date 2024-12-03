@@ -9,7 +9,7 @@ export default function NotFound() {
           페이지를 찾을 수 없습니다
         </h2>
         <p className="text-gray-500 mb-8">
-          요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+          요청하신 페이지가 존재하지 않거나 잘못된 경로 입니다.
         </p>
         <Link
           href="/"

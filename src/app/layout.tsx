@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} font-sans antialiased`}>
         {children}
-        <Toaster position="top-center" />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

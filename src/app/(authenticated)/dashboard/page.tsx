@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   if (isValidating || !isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-full">
         <div className="p-8 bg-white rounded-lg shadow-md">
           <h2 className="text-xl text-gray-600">인증 확인 중...</h2>
         </div>
@@ -26,7 +26,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-full">
       <div className="p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-gray-800">대시보드 페이지 입니다.</h1>
         <p className="mt-4 text-gray-600">

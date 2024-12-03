@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth/auth-store';
-import { supabase } from './supabase';
+import { supabase } from '../supabase/supabase';
 import { toast } from 'react-hot-toast';
 
 const apiClient = axios.create({

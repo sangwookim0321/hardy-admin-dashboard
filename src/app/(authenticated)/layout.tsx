@@ -1,6 +1,6 @@
 'use client';
 
-import Sidebar from '@/components/layout/Sidebar';
+import Sidebar from '@/components/organisms//sidebar/Sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';

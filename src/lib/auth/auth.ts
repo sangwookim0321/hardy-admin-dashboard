@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase } from '../supabase/supabase'
 import { useAuthStore } from '@/store/auth/auth-store'
 import { AuthError, User, Session } from '@supabase/supabase-js'
 

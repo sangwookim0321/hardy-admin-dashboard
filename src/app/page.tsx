@@ -1,7 +1,7 @@
 'use client';
 
 import { AuthForm } from '@/components/molecules/auth-form/AuthForm';
-import { signIn } from '@/lib/auth';
+import { signIn } from '@/lib/auth/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';

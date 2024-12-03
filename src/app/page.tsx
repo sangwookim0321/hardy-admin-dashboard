@@ -17,16 +17,16 @@ export default function Home() {
       const { data, error } = await signIn(email, password);
       
       if (error) {
-        toast.error('Login failed. Please check your credentials.');
+        toast.error('로그인에 실패했습니다.');
         return;
       }
 
       if (data?.user) {
-        toast.success('Login successful!');
+        toast.success('로그인 성공!');
         router.push('/dashboard');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred.');
+      toast.error('오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }

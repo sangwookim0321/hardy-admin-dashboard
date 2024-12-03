@@ -58,6 +58,7 @@ export const AuthForm = ({ onSubmit, isLoading = false }: AuthFormProps) => {
           <Button
             type="submit"
             className="w-full"
+            variant="black"
             isLoading={isLoading}
           >
             로그인

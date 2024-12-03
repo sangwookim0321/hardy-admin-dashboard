@@ -3,7 +3,7 @@
 import Sidebar from '@/components/organisms//sidebar/Sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function AuthenticatedLayout({
   children,
@@ -12,22 +12,14 @@ export default function AuthenticatedLayout({
 }) {
   const { isAuthenticated, isValidating } = useAuth();
   const router = useRouter();
-  const isFirstMount = useRef(true);
 
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
-    }
-
     if (!isValidating && !isAuthenticated) {
-      router.push('/');
+      router.replace('/');
     }
   }, [isAuthenticated, isValidating, router]);
 
-  // 최초 마운트 시에는 무조건 렌더링
-  // 그 이후에는 인증된 상태일 때만 렌더링
-  if (!isFirstMount.current && !isAuthenticated) {
+  if (!isAuthenticated) {
     return null;
   }
 

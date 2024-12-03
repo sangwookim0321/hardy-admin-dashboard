@@ -7,6 +7,7 @@ export interface AuthState extends StoreState {
   accessToken: string | null
   refreshToken: string | null
   expiresAt: number | null
+  isLoggingOut: boolean
   actions: {
     setAuth: (
       user: SupabaseUser | null,

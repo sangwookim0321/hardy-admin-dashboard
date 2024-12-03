@@ -8,6 +8,7 @@ const initialState: Omit<AuthState, 'actions'> = {
   accessToken: null,
   refreshToken: null,
   expiresAt: null,
+  isLoggingOut: false,
 }
 
 const getStoredAuth = () => {
@@ -24,6 +25,7 @@ const getStoredAuth = () => {
       accessToken: state.accessToken || initialState.accessToken,
       refreshToken: state.refreshToken || initialState.refreshToken,
       expiresAt: state.expiresAt || initialState.expiresAt,
+      isLoggingOut: state.isLoggingOut || initialState.isLoggingOut,
     }
   } catch (error) {
     console.error('Error reading from sessionStorage:', error)
@@ -38,7 +40,7 @@ export const useAuthStore = create<AuthState>()(
       actions: {
         setAuth: (user, accessToken, refreshToken, expiresAt) => {
           console.log('Setting auth:', { user, accessToken, refreshToken, expiresAt })
-          set({ user, accessToken, refreshToken, expiresAt })
+          set({ user, accessToken, refreshToken, expiresAt, isLoggingOut: false })
         },
         clearAuth: () => {
           console.log('Clearing auth')
@@ -46,7 +48,8 @@ export const useAuthStore = create<AuthState>()(
             user: null, 
             accessToken: null, 
             refreshToken: null, 
-            expiresAt: null 
+            expiresAt: null,
+            isLoggingOut: true
           })
         },
       },
@@ -60,6 +63,7 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         expiresAt: state.expiresAt,
         version: state.version,
+        isLoggingOut: state.isLoggingOut,
       }),
     }
   )

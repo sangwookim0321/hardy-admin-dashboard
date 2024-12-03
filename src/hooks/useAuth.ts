@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 export function useAuth() {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, accessToken, refreshToken, expiresAt, actions } = useAuthStore()
+  const { user, accessToken, refreshToken, expiresAt, actions, isLoggingOut } = useAuthStore()
   const [isValidating, setIsValidating] = useState(true)
   const [isValid, setIsValid] = useState(false)
   const hasShownError = useRef(false)
@@ -56,7 +56,7 @@ export function useAuth() {
 
       if (!user || !accessToken) {
         setIsValid(false)
-        if (!hasShownError.current && pathname !== '/') {
+        if (!hasShownError.current && pathname !== '/' && !isLoggingOut) {
           hasShownError.current = true
           toast.error('로그인이 필요한 페이지입니다.')
           router.push('/')

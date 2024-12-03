@@ -1,7 +1,32 @@
 import { supabase } from './supabase'
 import { useAuthStore } from '@/store/auth/auth-store'
+import { AuthError, User, Session } from '@supabase/supabase-js'
 
-export const signIn = async (email: string, password: string) => {
+export type AuthResponse = {
+  data: {
+    session?: Session;
+    user?: User;
+  } | null;
+  error: AuthError | Error | null;
+  message?: string;
+}
+
+const getErrorMessage = (error: AuthError | Error): string => {
+  if ('message' in error) {
+    if (error.message.includes('Invalid login credentials')) {
+      return '이메일 또는 비밀번호가 올바르지 않습니다.'
+    }
+    if (error.message.includes('Email not confirmed')) {
+      return '이메일 인증이 필요합니다.'
+    }
+    if (error.message.includes('Rate limit exceeded')) {
+      return '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.'
+    }
+  }
+  return '로그인 중 오류가 발생했습니다.'
+}
+
+export const signIn = async (email: string, password: string): Promise<AuthResponse> => {
   try {
     const response = await supabase.auth.signInWithPassword({
       email,
@@ -9,54 +34,86 @@ export const signIn = async (email: string, password: string) => {
     })
 
     if (response.error) {
-      return { data: null, error: response.error }
+      return { 
+        data: null, 
+        error: response.error,
+        message: getErrorMessage(response.error)
+      }
     }
 
-    if (response.data.user) {
-      const authData = {
-        id: response.data.user.id,
-        email: response.data.user.email || '',
-        role: response.data.user.role || 'authenticated',
-      }
-      console.log('로그인 성공:', response.data)
-      console.log('저장할 인증 데이터:', { user: authData, accessToken: response.data.session.access_token })
+    if (response.data.session) {
+      const { session } = response.data
       
       useAuthStore.getState().actions.setAuth(
-        authData,
-        response.data.session.access_token
+        session.user,
+        session.access_token,
+        session.refresh_token,
+        session.expires_at
       )
-
-      // 상태 저장 후 확인
-      const currentState = useAuthStore.getState()
-      console.log('저장된 상태:', currentState)
     }
 
-    return { data: response.data, error: null }
+    return {
+      data: {
+        session: response.data.session,
+        user: response.data.user
+      },
+      error: null
+    }
   } catch (error) {
-    return { data: null, error }
+    const err = error as Error
+    return { 
+      data: null, 
+      error: err,
+      message: getErrorMessage(err)
+    }
   }
 }
 
-export const signOut = async () => {
+export const signOut = async (): Promise<AuthResponse> => {
   try {
     const { error } = await supabase.auth.signOut()
     if (error) {
-      throw error
+      return { 
+        data: null,
+        error,
+        message: '로그아웃 중 오류가 발생했습니다.'
+      }
     }
+
     useAuthStore.getState().actions.clearAuth()
+    return { data: null, error: null }
   } catch (error) {
-    console.error('Error signing out:', error)
+    const err = error as Error
+    return { 
+      data: null, 
+      error: err, 
+      message: '로그아웃 중 오류가 발생했습니다.'
+    }
   }
 }
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<AuthResponse> => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) {
-      throw error;
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error || !user) {
+      return { 
+        data: null, 
+        error,
+        message: '사용자 정보를 가져올 수 없습니다.'
+      }
     }
-    return { user, error: null };
+
+    return {
+      data: { user },
+      error: null
+    }
   } catch (error) {
-    return { user: null, error };
+    const err = error as Error
+    return { 
+      data: null, 
+      error: err,
+      message: '사용자 정보를 가져올 수 없습니다.'
+    }
   }
-};
+}

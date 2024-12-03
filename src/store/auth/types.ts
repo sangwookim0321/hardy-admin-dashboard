@@ -1,16 +1,19 @@
 import { StoreState } from '..'
-
-export interface User {
-  id: string
-  email: string
-  role: string
-}
+import { User as SupabaseUser } from '@supabase/supabase-js'
 
 export interface AuthState extends StoreState {
-  user: User | null
+  version: number
+  user: SupabaseUser | null
   accessToken: string | null
+  refreshToken: string | null
+  expiresAt: number | null
   actions: {
-    setAuth: (user: User | null, accessToken: string | null) => void
+    setAuth: (
+      user: SupabaseUser | null,
+      accessToken: string | null,
+      refreshToken?: string | null,
+      expiresAt?: number | null
+    ) => void
     clearAuth: () => void
   }
 }

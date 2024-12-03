@@ -1,10 +1,10 @@
 'use client';
 
 import { AuthForm } from '@/components/molecules/auth-form/AuthForm';
-import { signIn } from '@/lib/auth';
+import { signIn } from '@/lib/auth/auth';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function Home() {
   const router = useRouter();
@@ -14,19 +14,19 @@ export default function Home() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await signIn(email, password);
+      const { data, error, message } = await signIn(email, password);
       
       if (error) {
-        toast.error('Login failed. Please check your credentials.');
+        toast.error(message || '로그인에 실패했습니다.');
         return;
       }
 
-      if (data?.user) {
-        toast.success('Login successful!');
+      if (data?.session) {
+        toast.success('로그인 성공!');
         router.push('/dashboard');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred.');
+      toast.error('로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }

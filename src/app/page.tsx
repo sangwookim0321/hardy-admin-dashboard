@@ -3,8 +3,9 @@
 import { AuthForm } from '@/components/molecules/auth-form/AuthForm';
 import { signIn } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useAuthStore } from '@/store/auth/auth-store';
 
 export default function Home() {
   const router = useRouter();
@@ -17,15 +18,21 @@ export default function Home() {
       const { data, error } = await signIn(email, password);
       
       if (error) {
+        console.error('로그인 에러:', error)
         toast.error('로그인에 실패했습니다.');
         return;
       }
 
+      // 로그인 후 상태 확인
+      const authState = useAuthStore.getState()
+      console.log('컴포넌트에서 확인한 인증 상태:', authState)
+      
       if (data?.user) {
         toast.success('로그인 성공!');
         router.push('/dashboard');
       }
     } catch (error) {
+      console.error('로그인 중 예외 발생:', error)
       toast.error('오류가 발생했습니다.');
     } finally {
       setIsLoading(false);

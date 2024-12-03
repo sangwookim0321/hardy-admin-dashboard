@@ -3,7 +3,7 @@ import { Button } from '@/components/atoms/button/Button';
 import { Input } from '@/components/atoms/input/Input';
 import { Form } from '@/components/atoms/form/Form';
 import { FlexBox } from '@/components/atoms/flex-box/FlexBox';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface AuthFormProps {
@@ -14,6 +14,11 @@ interface AuthFormProps {
 export const AuthForm = ({ onSubmit, isLoading = false }: AuthFormProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    setEmail('test@gmail.com');
+    setPassword('1234');
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

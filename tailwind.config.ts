@@ -11,6 +11,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        colorSky: "#3E80D5",
       },
       fontFamily: {
         sans: ['var(--font-pretendard)', 'sans-serif'],

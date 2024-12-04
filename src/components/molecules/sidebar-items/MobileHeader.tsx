@@ -1,6 +1,6 @@
 import { HiMenu, HiX } from 'react-icons/hi';
 import Logo from '@/components/atoms/logo/Logo';
-import IconButton from '@/components/atoms/buttons/IconButton';
+import IconButton from '@/components/atoms/icon-button/IconButton';
 
 interface MobileHeaderProps {
   isOpen: boolean;

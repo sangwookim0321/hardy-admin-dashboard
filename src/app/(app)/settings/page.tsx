@@ -1,21 +1,14 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import { SettingInfo } from '@/components/molecules/setting-info/SettingInfo'
-import { formatRoleDisplay, formatDate } from '@/utils/format'
+import { Settings } from '@/components/organisms/settings/Settings'
 
-export default function Settings() {
+export default function SettingsPage() {
   const { user } = useAuth()
+  // TODO: users 데이터를 가져오는 로직 추가 필요
+  const users = [] // 임시 빈 배열
 
   return (
-    <div className="p-8">
-      <SettingInfo
-        email={user?.email}
-        displayName={user?.app_metadata?.displayName}
-        phone={user?.phone}
-        created_at={user?.created_at ? formatDate(user.created_at) : ''}
-        role={formatRoleDisplay(user?.app_metadata?.role ?? '')}
-      />
-    </div>
+    <Settings currentUser={user} users={users} />
   )
 }

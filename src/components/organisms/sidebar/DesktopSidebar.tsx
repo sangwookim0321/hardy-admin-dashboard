@@ -10,7 +10,7 @@ import Logo from '@/components/atoms/logo/Logo';
 import UserProfile from '@/components/molecules/sidebar-items/UserProfile';
 import ProjectMenuItem from '@/components/molecules/sidebar-items/ProjectMenuItem';
 import BottomMenuItem from '@/components/molecules/sidebar-items/BottomMenuItem';
-import { projectMenus, bottomMenus } from './sidebarConfig';
+import { projectMenus, bottomMenus } from './config';
 import { User } from '@supabase/supabase-js';
 
 interface DesktopSidebarProps {

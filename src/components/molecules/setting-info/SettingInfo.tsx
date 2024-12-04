@@ -17,7 +17,7 @@ export const SettingInfo = ({
   role,
 }: SettingInfoProps) => {
   return (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <FlexBox direction="col" gap={4}>
           <FlexBox items="center" gap={4}>

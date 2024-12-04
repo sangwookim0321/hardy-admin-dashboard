@@ -58,7 +58,7 @@ export default function MobileSidebar({ user }: MobileSidebarProps) {
       
       <div
         className={`
-          fixed left-0 right-0 bg-white transition-all duration-300 ease-in-out overflow-hidden origin-top
+          fixed left-0 right-0 bg-white transition-all duration-300 ease-in-out overflow-hidden origin-top z-50
           ${isOpen 
             ? 'top-[60px] bottom-0 opacity-100 pointer-events-auto visible scale-y-100' 
             : 'top-[60px] bottom-0 opacity-0 pointer-events-none invisible scale-y-0'

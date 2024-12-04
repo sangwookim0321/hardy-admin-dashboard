@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from './lib/supabase/supabase'
 
 export async function middleware(request: NextRequest) {
   const token = request.headers.get('Authorization')?.split('Bearer ')[1]
@@ -13,11 +13,6 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
-    )
-
     const { data: { user }, error } = await supabase.auth.getUser(token)
 
     if (error || !user) {

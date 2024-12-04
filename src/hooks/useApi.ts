@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import apiClient from '@/lib/api-client';
+import apiClient from '@/lib/api/api-client';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 
 interface UseApiOptions<T> extends Omit<AxiosRequestConfig, 'url' | 'method'> {

@@ -5,7 +5,7 @@ dayjs.locale('ko');
 
 export function formatRoleDisplay(role: string): string {
   switch (role) {
-    case 'super-admin':
+    case 'super_admin':
       return 'Super Admin';
     case 'admin':
       return 'Admin';

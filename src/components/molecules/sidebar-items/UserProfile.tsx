@@ -9,7 +9,7 @@ export default function UserProfile() {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center p-6 border-b">
+      <div className="flex flex-col items-center px-6 pb-6 border-b">
         <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
           <h2 className="text-lg font-semibold w-20">
             <Skeleton count={1} height={12} borderRadius={8} duration={1.5} enableAnimation={true} direction="ltr" />
@@ -23,7 +23,7 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="flex flex-col items-center p-6 border-b">
+    <div className="flex flex-col items-center px-6 pb-6 border-b">
       <h2 className="text-lg font-semibold">{user.raw_app_meta_data.displayName}</h2>
       <p className="text-sm text-gray-500">{formatRoleDisplay(user.raw_app_meta_data.role)}</p>
     </div>

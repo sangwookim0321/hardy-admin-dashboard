@@ -33,7 +33,7 @@ export const AuthForm = ({ onSubmit, isLoading = false }: AuthFormProps) => {
     <FlexBox direction="col" items="center" gap={8}>
       <Image src="/hardy-admin-logo.svg" alt="Hardy Admin Logo" width={120} height={120} priority className="mb-4" />
       <FlexBox direction="col" items="center" className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg mx-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Hardy Admin Dashboard</h1>
+        <h1 className="text-xl font-bold text-gray-900 mb-8">Hardy Admin Dashboard</h1>
         <Form onSubmit={handleSubmit} className="w-full space-y-4">
           <Input
             type="email"

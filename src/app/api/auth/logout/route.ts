@@ -10,7 +10,7 @@ export async function POST() {
 
     // 1. 액세스 토큰 확인
     if (!accessToken) {
-      return NextResponse.json({ success: false, error: '인증되지 않은 요청입니다.' }, { status: 401 })
+      return NextResponse.json({ success: false, error: 'No Access Token Found' }, { status: 401 })
     }
 
     // 2. Supabase 세션 설정 및 토큰 검증
@@ -24,7 +24,7 @@ export async function POST() {
       cookieStore.delete('sb-access-token')
       cookieStore.delete('sb-refresh-token')
       cookieStore.delete('had-user-data')
-      return NextResponse.json({ success: false, error: '유효하지 않은 인증 토큰입니다.' }, { status: 401 })
+      return NextResponse.json({ success: false, error: 'Session Verification Failed' }, { status: 401 })
     }
 
     // 3. 유효한 세션으로 로그아웃 수행
@@ -39,8 +39,8 @@ export async function POST() {
     cookieStore.delete('sb-refresh-token')
     cookieStore.delete('had-user-data')
 
-    return NextResponse.json({ success: true, message: '로그아웃 성공!' }, { status: 200 })
+    return NextResponse.json({ success: true, message: 'Logout Successful' }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ success: false, error: '서버에 문제가 발생했습니다.' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 })
   }
 }

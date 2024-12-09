@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useUIStore } from '@/store/ui-store/ui-store'
 import { toast } from 'react-hot-toast'
 import { refreshApi } from './auth-api/refresh-api'
+import { formatSuccessMessage, formatErrorMessage } from '@/utils/format'
 
 // API 기본 URL 설정
 const baseURL = process.env.NEXT_PUBLIC_API_URL || ''
@@ -81,7 +82,8 @@ api.interceptors.response.use(
     useUIStore.getState().setLoading(false)
 
     if (response.data?.message) {
-      toast.success(response.data.message)
+      const formatttedMessage = formatSuccessMessage(response.data.message)
+      toast.success(formatttedMessage)
     }
 
     return response
@@ -91,17 +93,23 @@ api.interceptors.response.use(
 
     const originalRequest = error.config
 
+    // 에러 메시지 표시 (모든 에러에 대해 먼저 처리)
+    if (error.response?.data?.error) {
+      const formattedMessage = formatErrorMessage(error.response.data.error)
+      console.log('Error:', formattedMessage)
+      toast.error(formattedMessage !== 'Unknown' ? formattedMessage : error.response.data.error)
+    } else {
+      toast.error('요청 처리 중 오류가 발생했습니다.')
+    }
+
     // 401 에러이고 재시도하지 않은 요청인 경우 리프레시 시도
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // 로그아웃 요청인 경우는 리프레시를 시도하지 않고 바로 에러를 반환
-      if (originalRequest.url === '/api/auth/logout') {
+      // 로그인, 로그아웃 요청인 경우는 리프레시를 시도하지 않고 바로 에러를 반환
+      if (originalRequest.url === '/api/auth/login' || originalRequest.url === '/api/auth/logout') {
         return Promise.reject(error)
       }
       return refreshAccessToken(originalRequest)
     }
-
-    // 에러 메시지 표시
-    toast.error(error.response?.data?.error || '요청 처리 중 오류가 발생했습니다.')
 
     return Promise.reject(error)
   }

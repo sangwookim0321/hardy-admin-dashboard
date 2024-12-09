@@ -15,7 +15,6 @@ export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
       const response = await loginApi.login({ email, password })
-      console.log(response)
       if (response.success && response.data) {
         setUser(response.data)
         setAuthenticated(true)
@@ -24,6 +23,7 @@ export const useAuth = () => {
     } catch (error: any) {
       setUser(null)
       setAuthenticated(false)
+      throw error
     }
   }
 
@@ -33,12 +33,8 @@ export const useAuth = () => {
       const response = await logoutApi.logout()
       if (response.success) {
         router.push('/')
-      } else {
-        toast.error('인증에 문제가 발생했습니다. 다시 로그인해주세요.')
       }
     } catch (error: any) {
-      console.log('로그아웃 실패 catch')
-      toast.error('인증에 문제가 발생했습니다. 다시 로그인해주세요.')
     } finally {
       setUser(null)
       setAuthenticated(false)
@@ -78,12 +74,12 @@ export const useAuth = () => {
     }
   }
 
-  // 리프레시 토큰이 실패했을 때 호출할 함수
+  // 리프레시 토큰이 실패했을 때 호출 함수
   const handleRefreshFailure = () => {
     setUser(null)
     setAuthenticated(false)
-    router.replace('/') // replace를 사용하여 히스토리를 남기지 않음
-    toast.error('세션이 만료되었습니다. 다시 로그인해주세요.')
+    router.replace('/')
+    throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.')
   }
 
   return {

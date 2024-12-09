@@ -8,7 +8,7 @@ export async function POST() {
     const refreshToken = cookieStore.get('sb-refresh-token')?.value
 
     if (!refreshToken) {
-      return NextResponse.json({ success: false, error: '리프레시 토큰을 찾을 수 없습니다.' }, { status: 401 })
+      return NextResponse.json({ success: false, error: 'No Refresh Token Found' }, { status: 401 })
     }
 
     const { data: sessionData, error: refreshError } = await supabase.auth.refreshSession({
@@ -38,8 +38,8 @@ export async function POST() {
       })
     }
 
-    return NextResponse.json({ success: true, message: '토큰 갱신 성공!' }, { status: 200 })
+    return NextResponse.json({ success: true, message: 'Refreshed Access Token' }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ success: false, error: '서버에 문제가 발생했습니다.' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 })
   }
 }

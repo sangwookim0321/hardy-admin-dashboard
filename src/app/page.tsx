@@ -17,7 +17,6 @@ export default function Home() {
     try {
       await login(email, password)
     } catch (error) {
-      console.error('로그인 실패', error)
     } finally {
       setIsLoading(false)
     }

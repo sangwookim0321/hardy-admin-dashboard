@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       .single()
 
     if (userError) {
-      return NextResponse.json({ success: false, error: '사용자를 찾을 수 없습니다.' }, { status: 404 })
+      return NextResponse.json({ success: false, error: 'User Not Found' }, { status: 404 })
     }
 
     const cookieStore = await cookies()
@@ -50,11 +50,11 @@ export async function POST(request: Request) {
       {
         success: true,
         data: userData,
-        message: '로그인 성공!',
+        message: 'Login Successful',
       },
       { status: 200 }
     )
   } catch (error) {
-    return NextResponse.json({ success: false, error: '서버에 문제가 발생했습니다.' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 })
   }
 }

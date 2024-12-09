@@ -88,8 +88,8 @@ export function formatErrorMessage(status: string): string {
       return '액세스 토큰이 없습니다.'
     case 'No Refresh Token Found':
       return '리프레시 토큰이 없습니다.'
-    case 'Session Verification Failed':
-      return '유효하지 않은 인증 토큰입니다.'
+    case 'Invalid Session':
+      return '세션이 만료되었습니다. 다시 로그인해주세요.'
     case 'User Not Found':
       return '사용자를 찾을 수 없습니다.'
     default:

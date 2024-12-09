@@ -47,10 +47,11 @@ export const useAuth = () => {
   const refresh = async () => {
     try {
       const response = await refreshApi.refresh()
-      return response.success
+      if (!response.success) {
+        handleRefreshFailure()
+      }
     } catch (error) {
       handleRefreshFailure()
-      return false
     }
   }
 
@@ -61,16 +62,13 @@ export const useAuth = () => {
       if (response.success && response.data) {
         setUser(response.data)
         setAuthenticated(true)
-        return true
       } else {
-        setUser(null)
-        setAuthenticated(false)
-        return false
+        throw new Error(response.error)
       }
     } catch (error) {
       setUser(null)
       setAuthenticated(false)
-      return false
+      throw error
     }
   }
 
@@ -79,7 +77,6 @@ export const useAuth = () => {
     setUser(null)
     setAuthenticated(false)
     router.replace('/')
-    throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.')
   }
 
   return {

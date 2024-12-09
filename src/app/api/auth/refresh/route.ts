@@ -19,6 +19,10 @@ export async function POST() {
       return NextResponse.json({ success: false, error: refreshError.message }, { status: 401 })
     }
 
+    if (!sessionData.session) {
+      return NextResponse.json({ success: false, error: 'Invalid Session' }, { status: 401 })
+    }
+
     const { session } = sessionData
     if (session) {
       cookieStore.set('sb-access-token', session.access_token, {

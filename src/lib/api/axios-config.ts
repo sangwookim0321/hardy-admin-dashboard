@@ -51,7 +51,7 @@ const refreshAccessToken = async (originalRequest: any) => {
     const response = await refreshApi.refresh()
 
     if (!response.success) {
-      throw new Error(response.error || 'Refresh failed')
+      throw new Error(response.error || 'Refresh Failed')
     }
 
     isRefreshing = false
@@ -96,7 +96,6 @@ api.interceptors.response.use(
     // 에러 메시지 표시 (모든 에러에 대해 먼저 처리)
     if (error.response?.data?.error) {
       const formattedMessage = formatErrorMessage(error.response.data.error)
-      console.log('Error:', formattedMessage)
       toast.error(formattedMessage !== 'Unknown' ? formattedMessage : error.response.data.error)
     } else {
       toast.error('요청 처리 중 오류가 발생했습니다.')

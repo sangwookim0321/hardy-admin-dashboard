@@ -1,7 +1,5 @@
 'use client'
 
-import { useAuth } from '@/hooks/useAuth'
-
 export default function AbilityTestPage() {
   return (
     <div className="p-4">

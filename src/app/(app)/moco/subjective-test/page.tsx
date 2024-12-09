@@ -1,7 +1,5 @@
 'use client'
 
-import { useAuth } from '@/hooks/useAuth'
-
 export default function SubjectiveTestPage() {
   return (
     <div className="p-4">

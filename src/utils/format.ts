@@ -1,16 +1,18 @@
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 
-dayjs.locale('ko');
+dayjs.locale('ko')
 
 export function formatRoleDisplay(role: string): string {
   switch (role) {
     case 'super_admin':
-      return 'Super Admin';
+      return 'Super Admin'
     case 'admin':
-      return 'Admin';
+      return 'Admin'
+    case 'guest':
+      return 'Guest'
     default:
-      return 'Guest';
+      return 'Unknown'
   }
 }
 
@@ -20,7 +22,7 @@ export function formatRoleDisplay(role: string): string {
  * @returns 포맷팅된 날짜 문자열 (예: '2024.01.15')
  */
 export function formatDate(date: Date | string): string {
-  return dayjs(date).format('YYYY.MM.DD');
+  return dayjs(date).format('YYYY.MM.DD')
 }
 
 /**
@@ -29,7 +31,7 @@ export function formatDate(date: Date | string): string {
  * @returns 포맷팅된 날짜 문자열 (예: '2024.01.15 (월)')
  */
 export function formatDateWithDay(date: Date | string): string {
-  return dayjs(date).format('YYYY.MM.DD (ddd)');
+  return dayjs(date).format('YYYY.MM.DD (ddd)')
 }
 
 /**
@@ -38,15 +40,15 @@ export function formatDateWithDay(date: Date | string): string {
  * @returns 하이픈이 추가된 휴대폰 번호 (예: '010-1234-5678')
  */
 export function formatPhoneNumber(phone: string): string {
-  const cleaned = phone.replace(/\D/g, '');
-  
+  const cleaned = phone.replace(/\D/g, '')
+
   if (cleaned.length === 11) {
-    return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')
   } else if (cleaned.length === 10) {
-    return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+    return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
   }
-  
-  return phone;
+
+  return phone
 }
 
 /**
@@ -55,6 +57,6 @@ export function formatPhoneNumber(phone: string): string {
  * @returns 콤마가 추가된 문자열 (예: '1,234,567')
  */
 export function formatCurrency(amount: number | string): string {
-  const number = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return number.toLocaleString('ko-KR');
+  const number = typeof amount === 'string' ? parseFloat(amount) : amount
+  return number.toLocaleString('ko-KR')
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./assets/styles/globals.css";
 import { Toaster } from 'react-hot-toast';
+import Providers from "@/components/providers/Providers";
 
 const pretendard = localFont({
   src: './assets/fonts/Pretendard-Regular.woff',
@@ -24,8 +25,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.variable} font-sans antialiased`}>
-        {children}
-        <Toaster position="top-right" />
+        <Providers>
+          {children}
+          <Toaster position="top-right" />
+        </Providers>
       </body>
     </html>
   );

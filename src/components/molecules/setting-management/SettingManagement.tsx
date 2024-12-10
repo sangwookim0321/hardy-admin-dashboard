@@ -1,87 +1,192 @@
 'use client'
 
-import { useState } from 'react'
-import { User } from '@supabase/supabase-js'
+import { useUser } from '@/hooks/useUser'
+import { useAuthStore } from '@/store/auth-store/auth-store'
+import { formatDate, formatPhoneNumber } from '@/utils/format'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-interface SettingManagementProps {
-  currentUser?: User | null
-  users?: User[]
+interface UserDetail {
+  id: string
+  role: string
+  email: string
+  email_confirmed_at: string
+  last_sign_in_at: string
+  raw_app_meta_data: {
+    role: string
+    provider: string
+    providers: string[]
+    displayName: string
+  }
+  created_at: string
+  updated_at: string
+  phone: string | null
+  confirmed_at: string
+  service: string | null
+  is_active: boolean
 }
 
-type Role = 'SUPER' | 'ADMIN' | 'GUEST'
-type Status = '활성화' | '비활성화'
+interface UsersResponse {
+  success: boolean
+  data: UserDetail[]
+  message: string
+}
 
-interface UserTableRow extends User {
+interface UserTableRow extends UserDetail {
   number: number
 }
 
-export const SettingManagement = ({ currentUser, users = [] }: SettingManagementProps) => {
-  const isSuperAdmin = currentUser?.app_metadata?.role === 'super-admin'
-  const [selectedRole, setSelectedRole] = useState<Role>('GUEST')
-  const [selectedStatus, setSelectedStatus] = useState<Status>('활성화')
+type Role = 'super_admin' | 'admin' | 'guest'
+type Status = '활성화' | '비활성화'
 
-  const tableData: UserTableRow[] = users.map((user, index) => ({
-    ...user,
-    number: index + 1
-  }))
+export const SettingManagement = () => {
+  const { users, isLoading, updateRole } = useUser()
+  const { user: currentUser } = useAuthStore()
+
+  const handleRoleChange = (userId: string, newRole: Role) => {
+    updateRole({ targetUserId: userId, newRole })
+  }
+
+  const handleStatusChange = (userId: string, newStatus: Status) => {
+    const isActive = newStatus === '활성화'
+    // updateStatus({ targetUserId: userId, isActive })
+  }
+
+  const tableData: UserTableRow[] =
+    users?.map((user, index) => ({
+      ...user,
+      number: index + 1,
+      email_confirmed_at: user.email_confirmed_at,
+      last_sign_in_at: user.last_sign_in_at,
+      raw_app_meta_data: user.raw_app_meta_data,
+      phone: user.phone,
+      confirmed_at: user.confirmed_at,
+      service: user.service,
+      is_active: user.is_active,
+    })) || []
+
+  const LoadingSkeleton = () => (
+    <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
+      <>
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={30} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={150} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <Skeleton width={120} height={16} duration={0.8} enableAnimation direction="ltr" />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {[...Array(5)].map((_, index) => (
+            <tr key={index}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={30} height={20} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={150} height={20} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <Skeleton width={120} height={20} duration={0.8} enableAnimation direction="ltr" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </>
+    </SkeletonTheme>
+  )
 
   return (
     <div className="mt-8">
-      <div className="overflow-x-auto bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-6">
-        <table className="min-w-full bg-white rounded-lg">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">번호</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이메일</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">닉네임</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">휴대폰</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">생성일</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">권한</th>
-              {isSuperAdmin && (
-                <>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">권한 변경</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {tableData.map((user) => (
-              <tr key={user.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.number}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.app_metadata?.displayName}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.phone}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.created_at}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.app_metadata?.role}</td>
-                {isSuperAdmin && (
-                  <>
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          {isLoading ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {tableData.map((user) => (
+                  <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.number}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {user.raw_app_meta_data?.displayName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatPhoneNumber(user.phone)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <select
-                        className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        value={selectedRole}
-                        onChange={(e) => setSelectedRole(e.target.value as Role)}
+                        value={user.raw_app_meta_data?.role || 'guest'}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
+                        disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+                        className="rounded border p-2"
                       >
-                        <option value="SUPER">SUPER</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="GUEST">GUEST</option>
+                        {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (
+                          <option value="super_admin">Super Admin</option>
+                        ) : (
+                          <>
+                            <option value="guest">Guest</option>
+                            <option value="admin">Admin</option>
+                            <option value="super_admin">Super Admin</option>
+                          </>
+                        )}
                       </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <select
-                        className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        value={selectedStatus}
-                        onChange={(e) => setSelectedStatus(e.target.value as Status)}
+                        value={user.is_active ? '활성화' : '비활성화'}
+                        onChange={(e) => handleStatusChange(user.id, e.target.value as Status)}
+                        disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+                        className="rounded border p-2"
                       >
                         <option value="활성화">활성화</option>
                         <option value="비활성화">비활성화</option>
                       </select>
                     </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </>
+          )}
         </table>
       </div>
     </div>

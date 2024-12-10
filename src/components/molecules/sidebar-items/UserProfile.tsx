@@ -12,10 +12,10 @@ export default function UserProfile() {
       <div className="flex flex-col items-center px-6 pb-6 border-b">
         <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
           <h2 className="text-lg font-semibold w-20">
-            <Skeleton count={1} height={12} borderRadius={8} duration={1.5} enableAnimation={true} direction="ltr" />
+            <Skeleton count={1} height={12} borderRadius={8} duration={0.8} enableAnimation direction="ltr" />
           </h2>
           <p className="text-sm text-gray-500 w-12">
-            <Skeleton count={1} height={10} borderRadius={6} duration={1.5} enableAnimation={true} />
+            <Skeleton count={1} height={10} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
           </p>
         </SkeletonTheme>
       </div>

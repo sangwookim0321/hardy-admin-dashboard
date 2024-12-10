@@ -39,13 +39,14 @@ export function formatDateWithDay(date: Date | string): string {
  * @param phone - 휴대폰 번호 문자열
  * @returns 하이픈이 추가된 휴대폰 번호 (예: '010-1234-5678')
  */
-export function formatPhoneNumber(phone: string): string {
-  const cleaned = phone.replace(/\D/g, '')
+export function formatPhoneNumber(phone: string | null): string {
+  if (!phone) return '-'
 
-  if (cleaned.length === 11) {
-    return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')
-  } else if (cleaned.length === 10) {
-    return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+  const cleaned = phone.replace(/\D/g, '')
+  const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/)
+
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`
   }
 
   return phone
@@ -71,8 +72,12 @@ export function formatSuccessMessage(status: string): string {
       return '토큰이 갱신 되었습니다.'
     case 'Verified Successfully':
       return '인증 성공!'
+    case 'Users Fetched Successfully':
+      return '사용자 목록 조회 성공!'
+    case 'Role Updated Successfully':
+      return '해당 사용자의 역할이 변경되었습니다.'
     default:
-      return 'Unknown'
+      return status
   }
 }
 
@@ -92,7 +97,17 @@ export function formatErrorMessage(status: string): string {
       return '세션이 만료되었습니다. 다시 로그인해주세요.'
     case 'User Not Found':
       return '사용자를 찾을 수 없습니다.'
+    case 'Failed to Update Role in Database.':
+      return '역할 업데이트를 실패했습니다.'
+    case 'Target User Not Found.':
+      return '대상 사용자를 찾을 수 없습니다.'
+    case 'Invalid Role Value.':
+      return '역할 값이 잘못되었습니다.'
+    case 'You Must Provide Both User ID and New Role.':
+      return '사용자 ID와 역할 값이 필요합니다.'
+    case 'You Do Not Have Permission.':
+      return '권한이 없습니다.'
     default:
-      return 'Unknown'
+      return status
   }
 }

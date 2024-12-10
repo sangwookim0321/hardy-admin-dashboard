@@ -24,7 +24,7 @@ export async function GET() {
 
     // 사용자 정보 조회
     const { data: userData, error: userError } = await supabase
-      .from('users')
+      .from('hardy_admin_users')
       .select('*')
       .eq('id', sessionData.user.id)
       .single()

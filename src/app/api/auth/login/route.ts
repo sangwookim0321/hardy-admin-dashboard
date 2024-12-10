@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     const { data: userData, error: userError } = await supabase
-      .from('users')
+      .from('hardy_admin_users')
       .select('*')
       .eq('id', authData.user.id)
       .single()

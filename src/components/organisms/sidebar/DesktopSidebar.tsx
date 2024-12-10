@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-hot-toast'
 import { MdLogout } from 'react-icons/md'
+import { ClipLoader } from 'react-spinners'
 import Logo from '@/components/atoms/logo/Logo'
 import UserProfile from '@/components/molecules/sidebar-items/UserProfile'
 import ProjectMenuItem from '@/components/molecules/sidebar-items/ProjectMenuItem'
@@ -15,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth'
 export default function DesktopSidebar() {
   const pathname = usePathname()
   const [openMenus, setOpenMenus] = useState<string[]>([])
-  const { logout } = useAuth()
+  const { logout, isLogoutLoading } = useAuth()
 
   const handleLogout = () => {
     logout()
@@ -56,10 +55,12 @@ export default function DesktopSidebar() {
           ))}
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-3 rounded-lg px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 w-full"
+            disabled={isLogoutLoading}
+            className="flex items-center space-x-3 rounded-lg px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <MdLogout className="h-5 w-5" />
             <span>로그아웃</span>
+            {isLogoutLoading && <ClipLoader size={16} color="#6B7280" />}
           </button>
         </div>
       </div>

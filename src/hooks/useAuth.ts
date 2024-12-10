@@ -35,7 +35,7 @@ export const useAuth = () => {
   })
 
   // 로그아웃 mutation
-  const { mutate: logout } = useMutation({
+  const logoutMutation = useMutation({
     mutationFn: () => logoutApi.logout(),
     onSuccess: (response) => {
       if (response.success) {
@@ -90,11 +90,12 @@ export const useAuth = () => {
 
   return {
     login: loginMutation.mutate,
-    logout,
+    logout: logoutMutation.mutate,
     refresh,
     verify,
     handleRefreshFailure,
     isLoading: loginMutation.isPending,
+    isLogoutLoading: logoutMutation.isPending,
     isError: loginMutation.isError,
     error: loginMutation.error,
   }

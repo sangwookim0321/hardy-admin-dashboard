@@ -26,6 +26,13 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
+    if (targetUserId === process.env.NEXT_PUBLIC_PROJECT_OWNER_USER_ID) {
+      return NextResponse.json(
+        { success: false, error: 'You Do Not Have Permission To Modify The Role Of The Project Owner.' },
+        { status: 403 }
+      )
+    }
+
     // role 값 검증
     if (!['super_admin', 'admin', 'guest'].includes(newRole)) {
       return NextResponse.json({ success: false, error: 'Invalid Role Value.' }, { status: 400 })

@@ -107,6 +107,8 @@ export function formatErrorMessage(status: string): string {
       return '사용자 ID와 역할 값이 필요합니다.'
     case 'You Do Not Have Permission.':
       return '권한이 없습니다.'
+    case 'You Do Not Have Permission To Modify The Role Of The Project Owner.':
+      return '프로젝트 소유자의 역할을 수정 할 수 없습니다.'
     default:
       return status
   }

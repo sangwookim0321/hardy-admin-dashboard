@@ -5,19 +5,14 @@ import { verifySession } from '@/app/api/_utils/auth'
 export async function PATCH(request: NextRequest) {
   try {
     // 세션 검증
-    const { success, user_id, error } = await verifySession()
+    const { success, user_id, user_role, error } = await verifySession()
 
     if (!success) {
       return NextResponse.json({ success: false, error }, { status: 401 })
     }
 
     // 현재 사용자의 role 확인
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-    const currentUser = session?.user
-
-    if (!currentUser?.app_metadata?.role || currentUser.app_metadata.role !== 'super_admin') {
+    if (user_role !== 'super_admin') {
       return NextResponse.json({ success: false, error: 'You Do Not Have Permission.' }, { status: 403 })
     }
 

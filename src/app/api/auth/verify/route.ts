@@ -1,32 +1,20 @@
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase/supabase'
+import { verifySession } from '@/app/api/_utils/auth'
 
 export async function GET() {
   try {
-    const cookieStore = await cookies()
-    const accessToken = cookieStore.get('sb-access-token')?.value
-    const refreshToken = cookieStore.get('sb-refresh-token')?.value
+    const { success, error, user_id } = await verifySession()
 
-    if (!accessToken) {
-      return NextResponse.json({ success: false, error: 'No Access Token Found' }, { status: 401 })
-    }
-
-    // Supabase 세션 설정 및 토큰 검증
-    const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken || '',
-    })
-
-    if (sessionError || !sessionData.user) {
-      return NextResponse.json({ success: false, error: sessionError?.message }, { status: 401 })
+    if (!success) {
+      return NextResponse.json({ success: false, error }, { status: 401 })
     }
 
     // 사용자 정보 조회
     const { data: userData, error: userError } = await supabase
       .from('hardy_admin_users')
       .select('*')
-      .eq('id', sessionData.user.id)
+      .eq('id', user_id)
       .single()
 
     if (userError) {

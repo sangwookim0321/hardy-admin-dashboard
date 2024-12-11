@@ -5,7 +5,7 @@ import { verifySession } from '@/app/api/_utils/auth'
 export async function GET(request: NextRequest) {
   try {
     // 세션 검증
-    const { success, user_id, error } = await verifySession()
+    const { success, error } = await verifySession()
 
     if (!success) {
       return NextResponse.json({ success: false, error }, { status: 401 })

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatDate, formatPhoneNumber } from '@/utils/format'
@@ -26,12 +27,6 @@ interface UserDetail {
   is_active: boolean
 }
 
-interface UsersResponse {
-  success: boolean
-  data: UserDetail[]
-  message: string
-}
-
 interface UserTableRow extends UserDetail {
   number: number
 }
@@ -42,8 +37,15 @@ type Status = '활성화' | '비활성화'
 export const SettingManagement = () => {
   const { users, isLoading, updateRole } = useUser()
   const { user: currentUser } = useAuthStore()
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
 
-  const handleRoleChange = (userId: string, newRole: Role) => {
+  useEffect(() => {
+    if (!isLoading) {
+      setIsInitialLoading(false)
+    }
+  }, [isLoading])
+
+  const handleRoleChange = async (userId: string, newRole: Role) => {
     updateRole({ targetUserId: userId, newRole })
   }
 
@@ -94,7 +96,7 @@ export const SettingManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {[...Array(5)].map((_, index) => (
+          {[...Array(3)].map((_, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 <Skeleton width={30} height={20} duration={0.8} enableAnimation direction="ltr" />
@@ -128,19 +130,31 @@ export const SettingManagement = () => {
     <div className="mt-8">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          {isLoading ? (
+          {isInitialLoading ? (
             <LoadingSkeleton />
           ) : (
             <>
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="h-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created At
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -151,7 +165,9 @@ export const SettingManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {user.raw_app_meta_data?.displayName}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatPhoneNumber(user.phone)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatPhoneNumber(user.phone)}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <select
                         value={user.raw_app_meta_data?.role || 'guest'}

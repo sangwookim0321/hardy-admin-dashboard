@@ -1,14 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export interface StoreState {
-  version: number
-}
+export interface StoreState {}
 
-const createStore = <T extends StoreState>(
-  initialState: T,
-  storeName: string
-) => {
+const createStore = <T extends StoreState>(initialState: T, storeName: string) => {
   return create<T>()(
     persist(
       (set) => ({

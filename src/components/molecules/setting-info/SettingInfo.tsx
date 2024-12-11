@@ -34,6 +34,10 @@ export const SettingInfo = () => {
           <span className="w-20 text-gray-600">권한</span>
           <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
         </FlexBox>
+        <FlexBox items="center" gap={4}>
+          <span className="w-20 text-gray-600">수정</span>
+          <Skeleton width={80} height={40} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+        </FlexBox>
       </FlexBox>
     </SkeletonTheme>
   )

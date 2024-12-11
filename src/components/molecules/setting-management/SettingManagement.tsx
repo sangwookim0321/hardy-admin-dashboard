@@ -130,7 +130,7 @@ export const SettingManagement = () => {
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
-        <Button variant="outline" size="md" className="border-colorSky bg-colorDarkSky text-white hover:bg-colorSky">
+        <Button variant="sky" size="md">
           관리자 등록
         </Button>
       </div>
@@ -211,11 +211,7 @@ export const SettingManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
                     {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <Button
-                          variant="outline"
-                          size="md"
-                          className="border-red-500 bg-red-500 text-white hover:bg-red-600"
-                        >
+                        <Button variant="red" size="md">
                           삭제
                         </Button>
                       </td>

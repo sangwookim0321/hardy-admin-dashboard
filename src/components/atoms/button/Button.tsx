@@ -1,9 +1,9 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'black';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'black' | 'sky' | 'red'
+  size?: 'sm' | 'md' | 'lg'
+  isLoading?: boolean
 }
 
 export const Button = ({
@@ -15,20 +15,22 @@ export const Button = ({
   disabled,
   ...props
 }: ButtonProps) => {
-  const baseStyles = 'rounded-lg font-medium transition-colors duration-200';
-  
+  const baseStyles = 'rounded-lg font-medium transition-colors duration-200'
+
   const variants = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700',
     secondary: 'bg-gray-600 text-white hover:bg-gray-700',
     outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
-    black: 'bg-black text-white hover:bg-gray-900'
-  };
+    black: 'bg-black text-white hover:bg-gray-900',
+    sky: 'bg-colorSky text-white hover:bg-colorDarkSky',
+    red: 'bg-red-600 text-white hover:bg-red-700',
+  }
 
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg'
-  };
+    lg: 'px-6 py-3 text-lg',
+  }
 
   return (
     <button
@@ -50,5 +52,5 @@ export const Button = ({
         children
       )}
     </button>
-  );
-};
+  )
+}

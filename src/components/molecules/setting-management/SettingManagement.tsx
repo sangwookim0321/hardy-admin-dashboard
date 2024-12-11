@@ -6,6 +6,7 @@ import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatDate, formatPhoneNumber } from '@/utils/format'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Button } from '@/components/atoms/button/Button'
 
 interface UserDetail {
   id: string
@@ -128,6 +129,11 @@ export const SettingManagement = () => {
 
   return (
     <div className="mt-8">
+      <div className="flex justify-between items-center mb-4">
+        <Button variant="outline" size="md" className="border-colorSky bg-colorDarkSky text-white hover:bg-colorSky">
+          관리자 등록
+        </Button>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           {isInitialLoading ? (
@@ -152,8 +158,11 @@ export const SettingManagement = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="h-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created At
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Action
                   </th>
                 </tr>
               </thead>
@@ -173,7 +182,7 @@ export const SettingManagement = () => {
                         value={user.raw_app_meta_data?.role || 'guest'}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                         disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
-                        className="rounded border p-2"
+                        className="rounded border p-2 focus:border-colorSky focus:outline-none"
                       >
                         {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (
                           <option value="super_admin">Super Admin</option>
@@ -191,13 +200,24 @@ export const SettingManagement = () => {
                         value={user.is_active ? '활성화' : '비활성화'}
                         onChange={(e) => handleStatusChange(user.id, e.target.value as Status)}
                         disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
-                        className="rounded border p-2"
+                        className="rounded border p-2 focus:border-colorSky focus:outline-none"
                       >
                         <option value="활성화">활성화</option>
                         <option value="비활성화">비활성화</option>
                       </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
+                    {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <Button
+                          variant="outline"
+                          size="md"
+                          className="border-red-500 bg-red-500 text-white hover:bg-red-600"
+                        >
+                          삭제
+                        </Button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

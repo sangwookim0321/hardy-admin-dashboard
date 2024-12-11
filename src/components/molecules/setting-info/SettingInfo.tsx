@@ -1,5 +1,6 @@
 import { Input } from '@/components/atoms/input/Input'
 import { FlexBox } from '@/components/atoms/flex-box/FlexBox'
+import { Button } from '@/components/atoms/button/Button'
 import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatRoleDisplay, formatPhoneNumber, formatDate } from '@/utils/format'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
@@ -39,7 +40,7 @@ export const SettingInfo = () => {
 
   if (!user) {
     return (
-      <section className="bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-6">
+      <section className="bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <LoadingSkeleton />
         </div>
@@ -72,6 +73,12 @@ export const SettingInfo = () => {
           <FlexBox items="center" gap={4}>
             <span className="w-20 text-gray-600">권한</span>
             <Input disabled value={formatRoleDisplay(user.raw_app_meta_data?.role || '')} className="bg-gray-50" />
+          </FlexBox>
+          <FlexBox items="center" gap={4}>
+            <span className="w-16 text-gray-600">수정</span>
+            <Button variant="outline" size="md" className="h-10">
+              정보 변경
+            </Button>
           </FlexBox>
         </FlexBox>
       </div>

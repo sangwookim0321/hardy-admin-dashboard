@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-hot-toast'
+import { projectMenus, bottomMenus } from './config'
+import { MdLogout } from 'react-icons/md'
+import { useAuth } from '@/hooks/useAuth'
 import MobileHeader from '@/components/molecules/sidebar-items/MobileHeader'
 import UserProfile from '@/components/molecules/sidebar-items/UserProfile'
 import ProjectMenuItem from '@/components/molecules/sidebar-items/ProjectMenuItem'
 import BottomMenuItem from '@/components/molecules/sidebar-items/BottomMenuItem'
-import { projectMenus, bottomMenus } from './config'
-import { MdLogout } from 'react-icons/md'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function MobileSidebar() {
   const pathname = usePathname()

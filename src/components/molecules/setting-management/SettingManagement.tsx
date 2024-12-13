@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatDate, formatPhoneNumber } from '@/utils/format'
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 import { Button } from '@/components/atoms/button/Button'
 import { useModalStore } from '@/store/ui-store/modal-store'
 import { AdminRegisterModal } from './AdminRegisterModal'
+import { ClipLoader } from 'react-spinners'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
+import 'react-loading-skeleton/dist/skeleton.css'
 interface UserDetail {
   id: string
   role: string
@@ -38,10 +39,11 @@ type Role = 'super_admin' | 'admin' | 'guest'
 type Status = '활성화' | '비활성화'
 
 export const SettingManagement = () => {
-  const { users, isLoading, updateRole } = useUser()
+  const { users, isLoading, updateRole, isUpdateRoleLoading } = useUser()
   const { user: currentUser } = useAuthStore()
   const { openFormModal, openConfirmModal } = useModalStore()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [updatingIndex, setUpdatingIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (!isLoading) {
@@ -49,7 +51,10 @@ export const SettingManagement = () => {
     }
   }, [isLoading])
 
-  const handleRoleChange = async (userId: string, newRole: Role) => {
+  const handleRoleChange = async (userId: string, newRole: Role, index: number) => {
+    if (isUpdateRoleLoading) return
+
+    setUpdatingIndex(index)
     updateRole({ targetUserId: userId, newRole })
   }
 
@@ -99,65 +104,6 @@ export const SettingManagement = () => {
       is_active: user.is_active,
     })) || []
 
-  const LoadingSkeleton = () => (
-    <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
-      <>
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={30} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={150} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <Skeleton width={120} height={16} duration={0.8} enableAnimation direction="ltr" />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {[...Array(3)].map((_, index) => (
-            <tr key={index}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={30} height={20} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={150} height={20} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <Skeleton width={120} height={20} duration={0.8} enableAnimation direction="ltr" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </>
-    </SkeletonTheme>
-  )
-
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
@@ -200,7 +146,7 @@ export const SettingManagement = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {tableData.map((user) => (
+                {tableData.map((user, index) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.number}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
@@ -211,22 +157,33 @@ export const SettingManagement = () => {
                       {formatPhoneNumber(user.phone)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <select
-                        value={user.raw_app_meta_data?.role || 'guest'}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
-                        disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
-                        className="rounded border p-2 focus:border-colorSky focus:outline-none"
-                      >
-                        {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (
-                          <option value="super_admin">Super Admin</option>
-                        ) : (
-                          <>
-                            <option value="guest">Guest</option>
-                            <option value="admin">Admin</option>
+                      <div className="flex items-center relative w-[150px]">
+                        <select
+                          value={user.raw_app_meta_data?.role || 'guest'}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value as Role, index)}
+                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin' && updatingIndex === index}
+                          className="w-full rounded border p-2 focus:border-colorSky focus:outline-none"
+                        >
+                          {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (
                             <option value="super_admin">Super Admin</option>
-                          </>
-                        )}
-                      </select>
+                          ) : (
+                            <>
+                              <option value="guest">Guest</option>
+                              <option value="admin">Admin</option>
+                              <option value="super_admin">Super Admin</option>
+                            </>
+                          )}
+                        </select>
+                        <div className="absolute right-[-24px]">
+                          <ClipLoader
+                            color="#3E80D5"
+                            loading={updatingIndex === index && isUpdateRoleLoading}
+                            size={15}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                          />
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <select
@@ -263,3 +220,63 @@ export const SettingManagement = () => {
     </div>
   )
 }
+
+// 스켈레톤Ui
+const LoadingSkeleton = () => (
+  <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
+    <>
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={30} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={150} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={100} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <Skeleton width={120} height={16} duration={0.8} enableAnimation direction="ltr" />
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {[...Array(3)].map((_, index) => (
+          <tr key={index}>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={30} height={20} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={150} height={20} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={100} height={20} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={100} height={32} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <Skeleton width={120} height={20} duration={0.8} enableAnimation direction="ltr" />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </>
+  </SkeletonTheme>
+)

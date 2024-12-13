@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { MdLogout } from 'react-icons/md'
 import { ClipLoader } from 'react-spinners'
+import { projectMenus, bottomMenus } from './config'
+import { useAuth } from '@/hooks/useAuth'
 import Logo from '@/components/atoms/logo/Logo'
 import UserProfile from '@/components/molecules/sidebar-items/UserProfile'
 import ProjectMenuItem from '@/components/molecules/sidebar-items/ProjectMenuItem'
 import BottomMenuItem from '@/components/molecules/sidebar-items/BottomMenuItem'
-import { projectMenus, bottomMenus } from './config'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function DesktopSidebar() {
   const pathname = usePathname()
@@ -25,7 +25,7 @@ export default function DesktopSidebar() {
   }
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 h-screen bg-white border-r">
+    <aside className="hidden lg:flex flex-col w-64 flex-shrink-0 h-screen bg-white border-r">
       <div className="flex-1 overflow-y-auto">
         <div className="flex justify-center p-6">
           <Logo width={80} height={80} />

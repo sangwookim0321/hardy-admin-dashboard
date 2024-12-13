@@ -3,45 +3,10 @@ import { FlexBox } from '@/components/atoms/flex-box/FlexBox'
 import { Button } from '@/components/atoms/button/Button'
 import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatRoleDisplay, formatPhoneNumber, formatDate } from '@/utils/format'
+import { useModalStore } from '@/store/ui-store/modal-store'
+import { InfoEditModal } from './InfoEditModal'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useModalStore } from '@/store/ui-store/modal-store'
-import { IoMdClose } from 'react-icons/io'
-import { useState } from 'react'
-import { InfoEditModal } from './InfoEditModal'
-
-const LoadingSkeleton = () => (
-  <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
-    <FlexBox direction="col" gap={8}>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">이메일</span>
-        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">닉네임</span>
-        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">휴대폰</span>
-        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-    </FlexBox>
-    <FlexBox direction="col" gap={8}>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">생성일</span>
-        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">권한</span>
-        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-      <FlexBox items="center" gap={4}>
-        <span className="w-20 text-gray-600">수정</span>
-        <Skeleton width={80} height={40} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-      </FlexBox>
-    </FlexBox>
-  </SkeletonTheme>
-)
 
 export const SettingInfo = () => {
   const { user } = useAuthStore()
@@ -120,3 +85,37 @@ export const SettingInfo = () => {
     </section>
   )
 }
+
+// 스켈레톤Ui
+const LoadingSkeleton = () => (
+  <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
+    <FlexBox direction="col" gap={8}>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">이메일</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">닉네임</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">휴대폰</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+    </FlexBox>
+    <FlexBox direction="col" gap={8}>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">생성일</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">권한</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">수정</span>
+        <Skeleton width={80} height={40} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+    </FlexBox>
+  </SkeletonTheme>
+)

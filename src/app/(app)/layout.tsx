@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8 lg:p-8 mt-[60px] lg:mt-0">
+      <main className="overflow-x-auto flex-1 p-8 lg:p-8 mt-[60px] lg:mt-0">
         {title && <PageTitle title={title} />}
         {children}
       </main>

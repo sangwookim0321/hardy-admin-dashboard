@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useUIStore } from '@/store/ui-store/ui-store'
+import { useLoadingStore } from '@/store/ui-store/loading-store'
 import { toast } from 'react-hot-toast'
 import { refreshApi } from './auth-api/refresh-api'
 import { formatSuccessMessage, formatErrorMessage } from '@/utils/format'
@@ -67,11 +67,11 @@ const refreshAccessToken = async (originalRequest: any) => {
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    useUIStore.getState().setLoading(true)
+    useLoadingStore.getState().setLoading(true)
     return config
   },
   (error) => {
-    useUIStore.getState().setLoading(false)
+    useLoadingStore.getState().setLoading(false)
     return Promise.reject(error)
   }
 )
@@ -79,7 +79,7 @@ api.interceptors.request.use(
 // 응답 인터셉터
 api.interceptors.response.use(
   (response) => {
-    useUIStore.getState().setLoading(false)
+    useLoadingStore.getState().setLoading(false)
 
     if (response.data?.message) {
       const formatttedMessage = formatSuccessMessage(response.data.message)
@@ -89,7 +89,7 @@ api.interceptors.response.use(
     return response
   },
   async (error) => {
-    useUIStore.getState().setLoading(false)
+    useLoadingStore.getState().setLoading(false)
 
     const originalRequest = error.config
 

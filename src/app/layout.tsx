@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./assets/styles/globals.css";
 import { Toaster } from 'react-hot-toast';
 import Providers from "@/components/providers/Providers";
+import { FormModal } from "@/components/molecules/modal/FormModal";
+import { ConfirmModal } from "@/components/molecules/modal/ConfirmModal";
 
 const pretendard = localFont({
   src: './assets/fonts/Pretendard-Regular.woff',
@@ -28,6 +30,8 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster position="top-right" />
+          <FormModal />
+          <ConfirmModal />
         </Providers>
       </body>
     </html>

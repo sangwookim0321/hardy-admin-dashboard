@@ -26,7 +26,8 @@ export const useUser = () => {
 
   return {
     users: usersQuery.data,
-    isLoading: usersQuery.isLoading || updateRoleMutation.isPending,
+    isLoading: usersQuery.isLoading,
+    isUpdateRoleLoading: updateRoleMutation.isPending,
     isError: usersQuery.isError || updateRoleMutation.isError,
     error: usersQuery.error || updateRoleMutation.error,
     updateRole: updateRoleMutation.mutate,

@@ -1,4 +1,4 @@
-import { MdDashboard, MdSettings, MdLogout } from 'react-icons/md';
+import { MdDashboard, MdSettings, MdLogout } from 'react-icons/md'
 
 export const projectMenus = [
   {
@@ -21,13 +21,33 @@ export const projectMenus = [
   },
   {
     label: 'Seraph Creator',
-    href: '/projects/seraph',
+    href: '/seraph-creator',
+    children: [
+      {
+        label: '데이터 등록',
+        href: '/seraph-creator/registration',
+      },
+      {
+        label: '데이터 목록',
+        href: '/seraph-creator/list',
+      },
+    ],
   },
   {
     label: 'Portfolio',
-    href: '/projects/portfolio',
+    href: '/portfolio',
+    children: [
+      {
+        label: '데이터 등록',
+        href: '/portfolio/registration',
+      },
+      {
+        label: '데이터 목록',
+        href: '/portfolio/list',
+      },
+    ],
   },
-];
+]
 
 export const bottomMenus = [
   {
@@ -40,4 +60,4 @@ export const bottomMenus = [
     href: '/settings',
     icon: MdSettings,
   },
-];
+]

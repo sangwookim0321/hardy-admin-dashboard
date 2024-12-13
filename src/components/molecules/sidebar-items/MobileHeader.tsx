@@ -1,10 +1,12 @@
-import { HiMenu, HiX } from 'react-icons/hi';
-import Logo from '@/components/atoms/logo/Logo';
-import IconButton from '@/components/atoms/icon-button/IconButton';
+'use client'
+
+import { HiMenu, HiX } from 'react-icons/hi'
+import Logo from '@/components/atoms/logo/Logo'
+import IconButton from '@/components/atoms/icon-button/IconButton'
 
 interface MobileHeaderProps {
-  isOpen: boolean;
-  onToggle: () => void;
+  isOpen: boolean
+  onToggle: () => void
 }
 
 export default function MobileHeader({ isOpen, onToggle }: MobileHeaderProps) {
@@ -19,5 +21,5 @@ export default function MobileHeader({ isOpen, onToggle }: MobileHeaderProps) {
         />
       </div>
     </header>
-  );
+  )
 }

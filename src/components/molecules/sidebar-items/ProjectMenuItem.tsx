@@ -1,20 +1,20 @@
-import { HiChevronDown } from 'react-icons/hi';
-import NavLink from '@/components/atoms/navigation/NavLink';
+import { HiChevronDown } from 'react-icons/hi'
+import NavLink from '@/components/atoms/navigation/NavLink'
 
 interface SubMenu {
-  label: string;
-  href: string;
+  label: string
+  href: string
 }
 
 interface ProjectMenuItemProps {
-  label: string;
-  href: string;
-  children?: SubMenu[];
-  isOpen: boolean;
-  isActive: boolean;
-  onToggle: () => void;
-  onSubMenuClick?: () => void;
-  currentPath: string;
+  label: string
+  href: string
+  children?: SubMenu[]
+  isOpen: boolean
+  isActive: boolean
+  onToggle: () => void
+  onSubMenuClick?: () => void
+  currentPath: string
 }
 
 export default function ProjectMenuItem({
@@ -29,28 +29,29 @@ export default function ProjectMenuItem({
 }: ProjectMenuItemProps) {
   return (
     <div>
-      <div
-        onClick={(e) => {
-          e.preventDefault();
-          if (children) {
-            onToggle();
-          }
-        }}
-        className={`
-          flex items-center space-x-3 rounded-lg px-4 py-2.5 text-sm cursor-pointer
-          ${isActive ? 'text-colorSky font-bold' : 'text-gray-700 hover:bg-gray-100'}
-        `}
-      >
-        <HiChevronDown 
-          className={`h-4 w-4 transition-transform duration-200 ease-in-out
-            ${isOpen ? 'rotate-180' : ''}
+      {children ? (
+        <div
+          onClick={onToggle}
+          className={`
+            flex items-center space-x-3 rounded-lg px-4 py-2.5 text-sm cursor-pointer
+            ${isActive ? 'text-colorSky font-bold' : 'text-gray-700 hover:bg-gray-100'}
           `}
-        />
-        <span>{label}</span>
-      </div>
-      
+        >
+          <HiChevronDown
+            className={`h-4 w-4 transition-transform duration-200 ease-in-out
+              ${isOpen ? 'rotate-180' : ''}
+            `}
+          />
+          <span>{label}</span>
+        </div>
+      ) : (
+        <NavLink href={href} isActive={isActive} onClick={onSubMenuClick}>
+          <span>{label}</span>
+        </NavLink>
+      )}
+
       {children && (
-        <div 
+        <div
           className={`
             ml-7 space-y-1 overflow-hidden transition-all duration-200 ease-in-out
             ${isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}
@@ -62,11 +63,7 @@ export default function ProjectMenuItem({
               href={child.href}
               isActive={currentPath === child.href}
               onClick={onSubMenuClick}
-              className={
-                currentPath === child.href
-                  ? 'text-colorSky font-bold'
-                  : 'text-gray-600'
-              }
+              className={currentPath === child.href ? 'text-colorSky font-bold' : 'text-gray-600'}
             >
               {child.label}
             </NavLink>
@@ -74,5 +71,5 @@ export default function ProjectMenuItem({
         </div>
       )}
     </div>
-  );
+  )
 }

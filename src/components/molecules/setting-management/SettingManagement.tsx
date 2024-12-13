@@ -111,7 +111,7 @@ export const SettingManagement = () => {
           관리자 등록
         </Button>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-scroll">
         <table className="min-w-full divide-y divide-gray-200">
           {isInitialLoading ? (
             <LoadingSkeleton />
@@ -161,7 +161,7 @@ export const SettingManagement = () => {
                         <select
                           value={user.raw_app_meta_data?.role || 'guest'}
                           onChange={(e) => handleRoleChange(user.id, e.target.value as Role, index)}
-                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin' && updatingIndex === index}
+                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
                           className="w-full rounded border p-2 focus:border-colorSky focus:outline-none"
                         >
                           {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (

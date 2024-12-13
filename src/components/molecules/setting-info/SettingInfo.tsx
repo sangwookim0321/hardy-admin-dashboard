@@ -49,8 +49,8 @@ export const SettingInfo = () => {
   }
 
   return (
-    <section className="bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section className="overflow-hidden bg-white rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_8px_-1px_rgba(0,0,0,0.2)] p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         <FlexBox direction="col" gap={8}>
           <FlexBox items="center" gap={4}>
             <span className="w-20 text-gray-600">이메일</span>

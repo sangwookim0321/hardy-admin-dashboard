@@ -7,6 +7,8 @@ import { formatDate, formatPhoneNumber } from '@/utils/format'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Button } from '@/components/atoms/button/Button'
+import { useModalStore } from '@/store/ui-store/modal-store'
+import { AdminRegisterModal } from './AdminRegisterModal'
 
 interface UserDetail {
   id: string
@@ -38,6 +40,7 @@ type Status = '활성화' | '비활성화'
 export const SettingManagement = () => {
   const { users, isLoading, updateRole } = useUser()
   const { user: currentUser } = useAuthStore()
+  const { openFormModal, openConfirmModal } = useModalStore()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
 
   useEffect(() => {
@@ -53,6 +56,34 @@ export const SettingManagement = () => {
   const handleStatusChange = (userId: string, newStatus: Status) => {
     const isActive = newStatus === '활성화'
     // updateStatus({ targetUserId: userId, isActive })
+  }
+
+  const handleOpenRegisterModal = () => {
+    openFormModal({
+      title: '관리자 등록',
+      content: (
+        <AdminRegisterModal
+          onSubmit={(data) => {
+            console.log('Form submitted:', data)
+            // TODO: API 호출 로직 추가
+          }}
+        />
+      ),
+      onConfirm: () => {
+        // 폼 제출 로직은 AdminRegisterModal 컴포넌트 내부에서 처리
+      },
+    })
+  }
+
+  const handleOpenDeleteModal = (userId: string, userName: string, userEmail: string) => {
+    openConfirmModal({
+      title: '계정 삭제',
+      message: `정말로 ${userName} (${userEmail}) 계정을 삭제하시겠습니까?`,
+      onConfirm: () => {
+        console.log('Delete user:', userId)
+        // TODO: API 호출 로직 추가
+      },
+    })
   }
 
   const tableData: UserTableRow[] =
@@ -130,7 +161,7 @@ export const SettingManagement = () => {
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
-        <Button variant="sky" size="md">
+        <Button variant="sky" size="md" onClick={handleOpenRegisterModal}>
           관리자 등록
         </Button>
       </div>
@@ -211,7 +242,13 @@ export const SettingManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
                     {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <Button variant="red" size="md">
+                        <Button
+                          variant="red"
+                          size="md"
+                          onClick={() =>
+                            handleOpenDeleteModal(user.id, user.raw_app_meta_data?.displayName, user.email)
+                          }
+                        >
                           삭제
                         </Button>
                       </td>

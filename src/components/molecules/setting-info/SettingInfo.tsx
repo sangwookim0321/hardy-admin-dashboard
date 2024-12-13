@@ -5,42 +5,73 @@ import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatRoleDisplay, formatPhoneNumber, formatDate } from '@/utils/format'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { useModalStore } from '@/store/ui-store/modal-store'
+import { IoMdClose } from 'react-icons/io'
+import { useState } from 'react'
+import { InfoEditModal } from './InfoEditModal'
+
+const LoadingSkeleton = () => (
+  <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
+    <FlexBox direction="col" gap={8}>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">이메일</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">닉네임</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">휴대폰</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+    </FlexBox>
+    <FlexBox direction="col" gap={8}>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">생성일</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">권한</span>
+        <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+      <FlexBox items="center" gap={4}>
+        <span className="w-20 text-gray-600">수정</span>
+        <Skeleton width={80} height={40} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
+      </FlexBox>
+    </FlexBox>
+  </SkeletonTheme>
+)
 
 export const SettingInfo = () => {
   const { user } = useAuthStore()
+  const { openFormModal } = useModalStore()
 
-  const LoadingSkeleton = () => (
-    <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
-      <FlexBox direction="col" gap={8}>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">이메일</span>
-          <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">닉네임</span>
-          <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">휴대폰</span>
-          <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-      </FlexBox>
-      <FlexBox direction="col" gap={8}>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">생성일</span>
-          <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">권한</span>
-          <Skeleton width={250} height={30} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-        <FlexBox items="center" gap={4}>
-          <span className="w-20 text-gray-600">수정</span>
-          <Skeleton width={80} height={40} borderRadius={6} duration={0.8} enableAnimation direction="ltr" />
-        </FlexBox>
-      </FlexBox>
-    </SkeletonTheme>
-  )
+  const handleOpenFormModal = () => {
+    if (!user) return
+
+    openFormModal({
+      title: '사용자 정보 수정',
+      content: (
+        <InfoEditModal
+          initialData={{
+            email: user.email || '',
+            raw_app_meta_data: {
+              displayName: user.raw_app_meta_data?.displayName || '',
+            },
+            phone: user.phone || '',
+          }}
+          onSubmit={(data) => {
+            console.log('Form submitted:', data)
+            // TODO: API 호출 로직 추가
+          }}
+        />
+      ),
+      onConfirm: () => {
+        // 폼 제출 로직은 InfoEditModal 컴포넌트 내부에서 처리
+      },
+    })
+  }
 
   if (!user) {
     return (
@@ -80,8 +111,8 @@ export const SettingInfo = () => {
           </FlexBox>
           <FlexBox items="center" gap={4}>
             <span className="w-16 text-gray-600">수정</span>
-            <Button variant="outline" size="md" className="h-10">
-              정보 변경
+            <Button variant="outline" size="md" className="h-10" onClick={handleOpenFormModal}>
+              정보 수정
             </Button>
           </FlexBox>
         </FlexBox>

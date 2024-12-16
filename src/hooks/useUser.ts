@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getUsersApi } from '@/lib/api/users-api/get-users-api/get-users-api'
 import { updateRoleApi } from '@/lib/api/users-api/update-role-api/update-role-api'
+import { registerApi } from '@/lib/api/users-api/register-api/register-api'
 
 type Role = 'super_admin' | 'admin' | 'guest'
 
@@ -24,6 +25,18 @@ export const useUser = () => {
     },
   })
 
+  // 사용자 등록 mutation
+  const registerMutation = useMutation({
+    mutationFn: (params: { email: string; password: string }) => registerApi.register(params),
+    onSuccess: (response) => {
+      if (response.success) {
+        usersQuery.refetch()
+      }
+    },
+  })
+
+  // 사용자 삭제 mutation
+
   return {
     users: usersQuery.data,
     isLoading: usersQuery.isLoading,
@@ -32,5 +45,7 @@ export const useUser = () => {
     error: usersQuery.error || updateRoleMutation.error,
     updateRole: updateRoleMutation.mutate,
     refetch: usersQuery.refetch,
+    register: registerMutation.mutate,
+    isRegisterLoading: registerMutation.isPending,
   }
 }

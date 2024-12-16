@@ -26,7 +26,7 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    if (targetUserId === process.env.NEXT_PUBLIC_PROJECT_OWNER_USER_ID) {
+    if (targetUserId === process.env.PROJECT_OWNER_USER_ID) {
       return NextResponse.json(
         { success: false, error: 'You Do Not Have Permission To Modify The Role Of The Project Owner.' },
         { status: 403 }

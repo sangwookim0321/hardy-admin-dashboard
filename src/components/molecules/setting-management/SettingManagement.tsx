@@ -39,7 +39,7 @@ type Role = 'super_admin' | 'admin' | 'guest'
 type Status = '활성화' | '비활성화'
 
 export const SettingManagement = () => {
-  const { users, isLoading, updateRole, isUpdateRoleLoading } = useUser()
+  const { users, isLoading, updateRole, isUpdateRoleLoading, register, isRegisterLoading } = useUser()
   const { user: currentUser } = useAuthStore()
   const { openFormModal, openConfirmModal } = useModalStore()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
@@ -70,23 +70,26 @@ export const SettingManagement = () => {
         <AdminRegisterModal
           onSubmit={(data) => {
             console.log('Form submitted:', data)
-            // TODO: API 호출 로직 추가
+            register(data)
           }}
         />
       ),
       onConfirm: () => {
         // 폼 제출 로직은 AdminRegisterModal 컴포넌트 내부에서 처리
+        const form = document.querySelector('form')
+        form?.requestSubmit()
+        console.log('AdminRegisterModal onConfirm')
       },
     })
   }
 
-  const handleOpenDeleteModal = (userId: string, userName: string, userEmail: string) => {
+  const handleOpenConfirmModal = (userId: string, userName: string, userEmail: string) => {
     openConfirmModal({
       title: '계정 삭제',
       message: `정말로 ${userName} (${userEmail}) 계정을 삭제하시겠습니까?`,
       onConfirm: () => {
         console.log('Delete user:', userId)
-        // TODO: API 호출 로직 추가
+        // deleteApi({ targetUserId: userId })
       },
     })
   }
@@ -203,7 +206,7 @@ export const SettingManagement = () => {
                           variant="red"
                           size="md"
                           onClick={() =>
-                            handleOpenDeleteModal(user.id, user.raw_app_meta_data?.displayName, user.email)
+                            handleOpenConfirmModal(user.id, user.raw_app_meta_data?.displayName, user.email)
                           }
                         >
                           삭제

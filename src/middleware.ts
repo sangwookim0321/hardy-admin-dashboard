@@ -16,8 +16,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
-    // 로그인을 안한 상태이고 "/" 외의 경로에 접근하면 "/"로 리다이렉트 및 쿠키 삭제
-    if (!data.success && request.nextUrl.pathname !== '/') {
+    // 로그인을 안한 상태이거나 계정이 비활성화 상태이고 "/" 외의 경로에 접근하면 "/"로 리다이렉트 및 쿠키 삭제
+    if ((!data.success || data.data.is_active === false) && request.nextUrl.pathname !== '/') {
       const redirectResponse = NextResponse.redirect(new URL('/', request.url))
       redirectResponse.cookies.set('sb-access-token', '', { maxAge: 0 })
       redirectResponse.cookies.set('sb-refresh-token', '', { maxAge: 0 })

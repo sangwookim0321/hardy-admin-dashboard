@@ -25,6 +25,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'User Not Found' }, { status: 404 })
     }
 
+    if (userData.is_active === false) {
+      return NextResponse.json({ success: false, error: 'User Is Not Active' }, { status: 401 })
+    }
+
     const cookieStore = await cookies()
     const { session } = authData
 

@@ -22,7 +22,7 @@ export function formatRoleDisplay(role: string): string {
  * @returns 포맷팅된 날짜 문자열 (예: '2024.01.15')
  */
 export function formatDate(date: Date | string): string {
-  return dayjs(date).format('YYYY.MM.DD')
+  return dayjs(date).format('YYYY. MM. DD')
 }
 
 /**
@@ -31,7 +31,7 @@ export function formatDate(date: Date | string): string {
  * @returns 포맷팅된 날짜 문자열 (예: '2024.01.15 (월)')
  */
 export function formatDateWithDay(date: Date | string): string {
-  return dayjs(date).format('YYYY.MM.DD (ddd)')
+  return dayjs(date).format('YYYY. MM. DD (ddd)')
 }
 
 /**
@@ -76,6 +76,12 @@ export function formatSuccessMessage(status: string): string {
       return '사용자 목록 조회 성공!'
     case 'Role Updated Successfully':
       return '해당 사용자의 역할이 변경되었습니다.'
+    case 'User Deleted Successfully':
+      return '사용자 삭제 완료.'
+    case 'User Registered Successfully':
+      return '새로운 유저를 생성했습니다.'
+    case 'User Status Updated Successfully':
+      return '사용자 상태 변경이 완료되었습니다.'
     default:
       return status
   }
@@ -109,6 +115,32 @@ export function formatErrorMessage(status: string): string {
       return '권한이 없습니다.'
     case 'You Do Not Have Permission To Modify The Role Of The Project Owner.':
       return '프로젝트 소유자의 역할을 수정 할 수 없습니다.'
+    case 'A user with this email address has already been registered':
+      return '이메일 주소로 가입된 사용자가 있습니다.'
+    case 'You Do Not Have Permission To Delete The Project Owner.':
+      return '프로젝트 소유자를 삭제할 수 없습니다.'
+    case 'You Must Provide User ID.':
+      return '사용자 ID를 제공해야 합니다.'
+    case 'You Must Provide Both Email and Password.':
+      return '이메일과 패스워드를 제공해야 합니다.'
+    case 'Database error deleting user':
+      return 'RLS 정책에 의해 작업이 거부되었습니다.'
+    case 'Invalid Email Format.':
+      return '잘못된 이메일 형식입니다.'
+    case 'Password must be at least 6 characters long and contain special characters, English letters, numbers, etc.':
+      return '비밀번호는 특수문자, 영문, 숫자 포함 6자 이상이어야 합니다.'
+    case 'You Must Provide Both User ID and New Status.':
+      return '사용자 ID와 상태 값이 필요합니다.'
+    case 'You Do Not Have Permission To Modify The Status Of The Project Owner.':
+      return '프로젝트 소유자의 상태를 변경할 수 없습니다.'
+    case 'You Must Provide New Status.':
+      return '변경 할 상태값이 필요합니다.'
+    case 'Invalid New Status.':
+      return '변경할 상태값이 잘못되었습니다.'
+    case 'User Is Not Active':
+      return '해당 계정은 정지된 상태입니다.'
+    case 'Too Many Requests':
+      return '너무 많은 요청을 보냈습니다. 잠시 후 다시 시도해주세요.'
     default:
       return status
   }

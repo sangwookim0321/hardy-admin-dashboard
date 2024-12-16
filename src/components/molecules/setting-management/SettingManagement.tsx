@@ -39,11 +39,23 @@ type Role = 'super_admin' | 'admin' | 'guest'
 type Status = '활성화' | '비활성화'
 
 export const SettingManagement = () => {
-  const { users, isLoading, updateRole, isUpdateRoleLoading } = useUser()
+  const {
+    users,
+    isLoading,
+    updateRole,
+    isUpdatingRole,
+    register,
+    isRegistering,
+    deleteUser,
+    isDeletingUser,
+    updateStatus,
+    isUpdatingStatus,
+  } = useUser()
   const { user: currentUser } = useAuthStore()
   const { openFormModal, openConfirmModal } = useModalStore()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
-  const [updatingIndex, setUpdatingIndex] = useState<number | null>(null)
+  const [updatingRoleIndex, setUpdatingRoleIndex] = useState<number | null>(null)
+  const [updatingStatusIndex, setUpdatingStatusIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (!isLoading) {
@@ -52,15 +64,17 @@ export const SettingManagement = () => {
   }, [isLoading])
 
   const handleRoleChange = async (userId: string, newRole: Role, index: number) => {
-    if (isUpdateRoleLoading) return
+    if (isUpdatingRole) return
 
-    setUpdatingIndex(index)
+    setUpdatingRoleIndex(index)
     updateRole({ targetUserId: userId, newRole })
   }
 
-  const handleStatusChange = (userId: string, newStatus: Status) => {
-    const isActive = newStatus === '활성화'
-    // updateStatus({ targetUserId: userId, isActive })
+  const handleStatusChange = async (userId: string, newStatus: Status, index: number) => {
+    if (isUpdatingStatus) return
+
+    setUpdatingStatusIndex(index)
+    updateStatus({ targetUserId: userId, newStatus })
   }
 
   const handleOpenRegisterModal = () => {
@@ -69,24 +83,31 @@ export const SettingManagement = () => {
       content: (
         <AdminRegisterModal
           onSubmit={(data) => {
-            console.log('Form submitted:', data)
-            // TODO: API 호출 로직 추가
+            register(data)
           }}
         />
       ),
       onConfirm: () => {
-        // 폼 제출 로직은 AdminRegisterModal 컴포넌트 내부에서 처리
+        const forms = document.getElementsByTagName('form')
+        if (forms.length > 0) {
+          const form = forms[0]
+          const submitEvent = new Event('submit', {
+            bubbles: true,
+            cancelable: true,
+          })
+          form.dispatchEvent(submitEvent)
+        }
       },
     })
   }
 
-  const handleOpenDeleteModal = (userId: string, userName: string, userEmail: string) => {
+  const handleOpenConfirmModal = (userId: string, userName: string, userEmail: string) => {
     openConfirmModal({
       title: '계정 삭제',
       message: `정말로 ${userName} (${userEmail}) 계정을 삭제하시겠습니까?`,
       onConfirm: () => {
         console.log('Delete user:', userId)
-        // TODO: API 호출 로직 추가
+        deleteUser({ targetUserId: userId })
       },
     })
   }
@@ -107,7 +128,12 @@ export const SettingManagement = () => {
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
-        <Button variant="sky" size="md" onClick={handleOpenRegisterModal}>
+        <Button
+          variant={currentUser?.raw_app_meta_data?.role === 'super_admin' ? 'sky' : 'secondary'}
+          size="md"
+          onClick={handleOpenRegisterModal}
+          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+        >
           관리자 등록
         </Button>
       </div>
@@ -177,7 +203,7 @@ export const SettingManagement = () => {
                         <div className="absolute right-[-24px]">
                           <ClipLoader
                             color="#3E80D5"
-                            loading={updatingIndex === index && isUpdateRoleLoading}
+                            loading={updatingRoleIndex === index && isUpdatingRole}
                             size={15}
                             aria-label="Loading Spinner"
                             data-testid="loader"
@@ -186,15 +212,26 @@ export const SettingManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <select
-                        value={user.is_active ? '활성화' : '비활성화'}
-                        onChange={(e) => handleStatusChange(user.id, e.target.value as Status)}
-                        disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
-                        className="rounded border p-2 focus:border-colorSky focus:outline-none"
-                      >
-                        <option value="활성화">활성화</option>
-                        <option value="비활성화">비활성화</option>
-                      </select>
+                      <div className="flex items-center relative w-[150px]">
+                        <select
+                          value={user.is_active ? '활성화' : '비활성화'}
+                          onChange={(e) => handleStatusChange(user.id, e.target.value as Status, index)}
+                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+                          className="rounded border p-2 focus:border-colorSky focus:outline-none"
+                        >
+                          <option value="활성화">활성화</option>
+                          <option value="비활성화">비활성화</option>
+                        </select>
+                        <div className="absolute right-[36px]">
+                          <ClipLoader
+                            color="#3E80D5"
+                            loading={updatingStatusIndex === index && isUpdatingStatus}
+                            size={15}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                          />
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
                     {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
@@ -203,7 +240,7 @@ export const SettingManagement = () => {
                           variant="red"
                           size="md"
                           onClick={() =>
-                            handleOpenDeleteModal(user.id, user.raw_app_meta_data?.displayName, user.email)
+                            handleOpenConfirmModal(user.id, user.raw_app_meta_data?.displayName, user.email)
                           }
                         >
                           삭제

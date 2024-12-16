@@ -36,6 +36,7 @@ export const AuthForm = ({ onSubmit, isLoading = false }: AuthFormProps) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            maxLength={50}
           />
           <Input
             type="password"
@@ -44,6 +45,7 @@ export const AuthForm = ({ onSubmit, isLoading = false }: AuthFormProps) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            maxLength={20}
           />
           <Button type="submit" className="w-full" variant="black" isLoading={isLoading}>
             로그인

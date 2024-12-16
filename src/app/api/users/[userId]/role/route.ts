@@ -2,31 +2,29 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase/supabase'
 import { verifySession } from '@/app/api/_utils/auth'
 
-export async function PATCH(request: NextRequest) {
+// 사용자 role 변경
+export async function PATCH(request: NextRequest, context: { params: { userId: string } }) {
   try {
+    const userId = await Promise.resolve(context.params.userId)
     // 세션 검증
-    const { success, user_id, user_role, error } = await verifySession()
+    const { success, user_id, user_role, errorType, error } = await verifySession('super_admin')
 
     if (!success) {
-      return NextResponse.json({ success: false, error }, { status: 401 })
-    }
-
-    // 현재 사용자의 role 확인
-    if (user_role !== 'super_admin') {
-      return NextResponse.json({ success: false, error: 'You Do Not Have Permission.' }, { status: 403 })
+      const statusCode = errorType === 'permission' ? 403 : 401
+      return NextResponse.json({ success: false, error }, { status: statusCode })
     }
 
     // 요청 body 파싱
-    const { targetUserId, newRole } = await request.json()
+    const { newRole } = await request.json()
 
-    if (!targetUserId || !newRole) {
+    if (!userId || !newRole) {
       return NextResponse.json(
         { success: false, error: 'You Must Provide Both User ID and New Role.' },
         { status: 400 }
       )
     }
 
-    if (targetUserId === process.env.PROJECT_OWNER_USER_ID) {
+    if (userId === process.env.PROJECT_OWNER_USER_ID) {
       return NextResponse.json(
         { success: false, error: 'You Do Not Have Permission To Modify The Role Of The Project Owner.' },
         { status: 403 }
@@ -41,7 +39,7 @@ export async function PATCH(request: NextRequest) {
     const { data: currentUserData, error: fetchError } = await supabase
       .from('hardy_admin_users')
       .select('raw_app_meta_data')
-      .eq('id', targetUserId)
+      .eq('id', userId)
       .single()
 
     if (fetchError || !currentUserData) {
@@ -58,8 +56,9 @@ export async function PATCH(request: NextRequest) {
       .from('hardy_admin_users')
       .update({
         raw_app_meta_data: updatedMetaData,
+        user_role: newRole,
       })
-      .eq('id', targetUserId)
+      .eq('id', userId)
 
     if (updateError) {
       return NextResponse.json({ success: false, error: 'Failed to Update Role in Database.' }, { status: 500 })

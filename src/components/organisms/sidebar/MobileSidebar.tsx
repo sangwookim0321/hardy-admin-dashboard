@@ -14,9 +14,18 @@ export default function MobileSidebar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [openMenus, setOpenMenus] = useState<string[]>([])
+  const [isMounted, setIsMounted] = useState(false)
   const { logout } = useAuth()
 
   useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted) {
+      return
+    }
+
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsOpen(false)
@@ -25,7 +34,7 @@ export default function MobileSidebar() {
 
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [isMounted])
 
   const handleLogout = () => {
     logout()

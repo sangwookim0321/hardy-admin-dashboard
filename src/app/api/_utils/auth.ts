@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { supabase } from '@/lib/supabase/supabase'
 
-export async function verifySession() {
+export async function verifySession(requiredRole?: string) {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('sb-access-token')?.value
   const refreshToken = cookieStore.get('sb-refresh-token')?.value
@@ -21,5 +21,19 @@ export async function verifySession() {
     return { success: false, error: 'Session Verification Failed' }
   }
 
-  return { success: true, user_id: sessionData.user.id, user_role: sessionData.user.app_metadata.role, cookieStore }
+  const user_role = sessionData.user.app_metadata.role
+  const user_id = sessionData.user.id
+
+  // ROLE 검증
+  if (requiredRole) {
+    if (requiredRole === 'super_admin' && user_role !== 'super_admin') {
+      return { success: false, error: 'You Do Not Have Permission.', errorType: 'permission' }
+    }
+
+    if (requiredRole === 'admin' && user_role !== 'super_admin' && user_role !== 'admin') {
+      return { success: false, error: 'You Do Not Have Permission.', errorType: 'permission' }
+    }
+  }
+
+  return { success: true, user_id, user_role, cookieStore }
 }

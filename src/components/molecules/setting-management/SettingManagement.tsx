@@ -9,15 +9,17 @@ import { useModalStore } from '@/store/ui-store/modal-store'
 import { AdminRegisterModal } from './AdminRegisterModal'
 import { ClipLoader } from 'react-spinners'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-
 import 'react-loading-skeleton/dist/skeleton.css'
+
 interface UserDetail {
   id: string
   role: string
+  display_name: string
+  user_role: string
   email: string
   email_confirmed_at: string
   last_sign_in_at: string
-  raw_app_meta_data: {
+  raw_app_meta_data?: {
     role: string
     provider: string
     providers: string[]
@@ -118,7 +120,10 @@ export const SettingManagement = () => {
       number: index + 1,
       email_confirmed_at: user.email_confirmed_at,
       last_sign_in_at: user.last_sign_in_at,
-      raw_app_meta_data: user.raw_app_meta_data,
+      display_name: user.display_name,
+      user_role: user.user_role,
+      created_at: formatDate(user.created_at),
+      updated_at: formatDate(user.updated_at),
       phone: user.phone,
       confirmed_at: user.confirmed_at,
       service: user.service,
@@ -129,10 +134,10 @@ export const SettingManagement = () => {
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
         <Button
-          variant={currentUser?.raw_app_meta_data?.role === 'super_admin' ? 'sky' : 'secondary'}
+          variant={currentUser?.user_role === 'super_admin' ? 'sky' : 'secondary'}
           size="md"
           onClick={handleOpenRegisterModal}
-          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+          disabled={currentUser?.user_role !== 'super_admin'}
         >
           관리자 등록
         </Button>
@@ -164,7 +169,7 @@ export const SettingManagement = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created At
                   </th>
-                  {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
+                  {currentUser?.user_role === 'super_admin' && (
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Action
                     </th>
@@ -176,21 +181,19 @@ export const SettingManagement = () => {
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.number}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.raw_app_meta_data?.displayName}
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.display_name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatPhoneNumber(user.phone)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="flex items-center relative w-[150px]">
                         <select
-                          value={user.raw_app_meta_data?.role || 'guest'}
+                          value={user.user_role || 'guest'}
                           onChange={(e) => handleRoleChange(user.id, e.target.value as Role, index)}
-                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+                          disabled={currentUser?.user_role !== 'super_admin'}
                           className="w-full rounded border p-2 focus:border-colorSky focus:outline-none"
                         >
-                          {user.id === currentUser?.id && user.raw_app_meta_data?.role === 'super_admin' ? (
+                          {user.id === currentUser?.id && user.user_role === 'super_admin' ? (
                             <option value="super_admin">Super Admin</option>
                           ) : (
                             <>
@@ -216,7 +219,7 @@ export const SettingManagement = () => {
                         <select
                           value={user.is_active ? '활성화' : '비활성화'}
                           onChange={(e) => handleStatusChange(user.id, e.target.value as Status, index)}
-                          disabled={currentUser?.raw_app_meta_data?.role !== 'super_admin'}
+                          disabled={currentUser?.user_role !== 'super_admin'}
                           className="rounded border p-2 focus:border-colorSky focus:outline-none"
                         >
                           <option value="활성화">활성화</option>
@@ -234,14 +237,12 @@ export const SettingManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(user.created_at)}</td>
-                    {currentUser?.raw_app_meta_data?.role === 'super_admin' && (
+                    {currentUser?.user_role === 'super_admin' && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <Button
                           variant="red"
                           size="md"
-                          onClick={() =>
-                            handleOpenConfirmModal(user.id, user.raw_app_meta_data?.displayName, user.email)
-                          }
+                          onClick={() => handleOpenConfirmModal(user.id, user.display_name, user.email)}
                         >
                           삭제
                         </Button>

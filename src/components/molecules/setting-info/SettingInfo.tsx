@@ -5,35 +5,76 @@ import { useAuthStore } from '@/store/auth-store/auth-store'
 import { formatRoleDisplay, formatPhoneNumber, formatDate } from '@/utils/format'
 import { useModalStore } from '@/store/ui-store/modal-store'
 import { InfoEditModal } from './InfoEditModal'
+import { useUser } from '@/hooks/useUser'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { PasswordEditModal } from './PasswordEditModal'
 
 export const SettingInfo = () => {
   const { user } = useAuthStore()
   const { openFormModal } = useModalStore()
+  const { updateUserInfo, isUpdatingUserInfo, updateUserPassword, isUpdatingUserPassword } = useUser()
 
-  const handleOpenFormModal = () => {
-    if (!user) return
-
+  const handleOpenInfoEditModal = () => {
     openFormModal({
       title: '사용자 정보 수정',
       content: (
         <InfoEditModal
           initialData={{
-            email: user.email || '',
-            raw_app_meta_data: {
-              displayName: user.raw_app_meta_data?.displayName || '',
-            },
-            phone: user.phone || '',
+            email: user?.email || '',
+            displayName: user?.display_name || '',
+            phone: user?.phone || '',
           }}
           onSubmit={(data) => {
-            console.log('Form submitted:', data)
-            // TODO: API 호출 로직 추가
+            updateUserInfo({
+              targetUserId: user?.id || '',
+              email: data.email,
+              displayName: data.displayName,
+              phone: data.phone,
+            })
           }}
         />
       ),
       onConfirm: () => {
-        // 폼 제출 로직은 InfoEditModal 컴포넌트 내부에서 처리
+        const forms = document.getElementsByTagName('form')
+        if (forms.length > 0) {
+          const form = forms[0]
+          const submitEvent = new Event('submit', {
+            bubbles: true,
+            cancelable: true,
+          })
+          form.dispatchEvent(submitEvent)
+        }
+      },
+    })
+  }
+
+  const handleOpenPasswordEditModal = () => {
+    openFormModal({
+      title: '비밀번호 변경',
+      content: (
+        <PasswordEditModal
+          onSubmit={(data) => {
+            updateUserPassword({
+              targetUserId: user?.id || '',
+              currentPassword: data.currentPassword,
+              newPassword: data.newPassword,
+              newPasswordConfirm: data.newPasswordConfirm,
+              email: user?.email || '',
+            })
+          }}
+        />
+      ),
+      onConfirm: () => {
+        const forms = document.getElementsByTagName('form')
+        if (forms.length > 0) {
+          const form = forms[0]
+          const submitEvent = new Event('submit', {
+            bubbles: true,
+            cancelable: true,
+          })
+          form.dispatchEvent(submitEvent)
+        }
       },
     })
   }
@@ -58,7 +99,7 @@ export const SettingInfo = () => {
           </FlexBox>
           <FlexBox items="center" gap={4}>
             <span className="w-20 text-gray-600">닉네임</span>
-            <Input disabled value={user.raw_app_meta_data?.displayName || ''} className="bg-gray-50" />
+            <Input disabled value={user.display_name || ''} className="bg-gray-50" />
           </FlexBox>
           <FlexBox items="center" gap={4}>
             <span className="w-20 text-gray-600">휴대폰</span>
@@ -72,13 +113,30 @@ export const SettingInfo = () => {
           </FlexBox>
           <FlexBox items="center" gap={4}>
             <span className="w-20 text-gray-600">권한</span>
-            <Input disabled value={formatRoleDisplay(user.raw_app_meta_data?.role || '')} className="bg-gray-50" />
+            <Input disabled value={formatRoleDisplay(user.user_role || '')} className="bg-gray-50" />
           </FlexBox>
           <FlexBox items="center" gap={4}>
             <span className="w-16 text-gray-600">수정</span>
-            <Button variant="outline" size="md" className="h-10" onClick={handleOpenFormModal}>
-              정보 수정
-            </Button>
+            <FlexBox items="center" gap={4}>
+              <Button
+                variant="outline"
+                size="md"
+                className="h-10"
+                onClick={handleOpenInfoEditModal}
+                disabled={isUpdatingUserInfo}
+              >
+                {isUpdatingUserInfo ? '수정 중...' : '정보 수정'}
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
+                className="h-10"
+                onClick={handleOpenPasswordEditModal}
+                disabled={isUpdatingUserPassword}
+              >
+                {isUpdatingUserPassword ? '변경 중...' : '비밀번호 변경'}
+              </Button>
+            </FlexBox>
           </FlexBox>
         </FlexBox>
       </div>
@@ -86,7 +144,7 @@ export const SettingInfo = () => {
   )
 }
 
-// 스켈레톤Ui
+// 스켈레톤UI
 const LoadingSkeleton = () => (
   <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
     <FlexBox direction="col" gap={8}>

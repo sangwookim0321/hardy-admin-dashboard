@@ -9,7 +9,7 @@ interface User {
   [key: string]: any
 }
 
-interface UserResponse {
+interface UsersResponse {
   success: boolean
   data?: User[]
   message?: string
@@ -73,12 +73,38 @@ interface UpdateStatusResponse {
   status: number
 }
 
+interface UpdateUserInfoRequest {
+  targetUserId: string
+  email: string
+  displayName: string
+  phone: string
+}
+
+interface UpdateUserInfoResponse {
+  success: boolean
+  message?: string
+  error?: string
+  status: number
+}
+
+interface UserInfoRequest {
+  targetUserId: string
+}
+
+interface UserInfoResponse {
+  success: boolean
+  data?: User
+  message?: string
+  error?: string
+  status: number
+}
+
 class UsersService {
   private readonly BASE_URL = '/api/users'
 
   // 유저 목록 조회
-  async getUsers(): Promise<UserResponse> {
-    const response = await api.get<UserResponse>(`${this.BASE_URL}`)
+  async getUsers(): Promise<UsersResponse> {
+    const response = await api.get<UsersResponse>(`${this.BASE_URL}`)
     const { data, status } = response
     return { ...data, status }
   }
@@ -110,6 +136,26 @@ class UsersService {
   async updateStatus(params: UpdateStatusRequest): Promise<UpdateStatusResponse> {
     const { targetUserId, newStatus } = params
     const response = await api.patch<UpdateStatusResponse>(`${this.BASE_URL}/${targetUserId}/status`, { newStatus })
+    const { data, status } = response
+    return { ...data, status }
+  }
+
+  // 사용자 정보 변경
+  async updateUserInfo(params: UpdateUserInfoRequest): Promise<UpdateUserInfoResponse> {
+    const { targetUserId, email, displayName, phone } = params
+    const response = await api.patch<UpdateUserInfoResponse>(`${this.BASE_URL}/${targetUserId}`, {
+      email,
+      displayName,
+      phone,
+    })
+    const { data, status } = response
+    return { ...data, status }
+  }
+
+  // 사용자 조회
+  async getUserInfo(params: UserInfoRequest): Promise<UserInfoResponse> {
+    const { targetUserId } = params
+    const response = await api.get<UserInfoResponse>(`${this.BASE_URL}/${targetUserId}`)
     const { data, status } = response
     return { ...data, status }
   }

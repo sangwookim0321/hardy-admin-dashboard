@@ -54,6 +54,33 @@ export const useUser = () => {
     },
   })
 
+  // 사용자 정보 변경 mutation
+  const updateUserInfoMutation = useMutation({
+    mutationFn: ({
+      targetUserId,
+      email,
+      displayName,
+      phone,
+    }: {
+      targetUserId: string
+      email: string
+      displayName: string
+      phone: string
+    }) => usersService.updateUserInfo({ targetUserId, email, displayName, phone }),
+    onSuccess: (response) => {
+      if (response.success) {
+        usersQuery.refetch()
+      }
+    },
+  })
+
+  // 사용자 정보 조회 query
+  const userInfoQuery = useQuery({
+    queryKey: ['user-info'],
+    queryFn: () => usersService.getUserInfo({ targetUserId: '' }),
+    select: (response) => response.data,
+  })
+
   return {
     users: usersQuery.data,
     isLoading: usersQuery.isLoading,
@@ -65,5 +92,9 @@ export const useUser = () => {
     isDeletingUser: deleteUserMutation.isPending,
     updateStatus: updateStatusMutation.mutate,
     isUpdatingStatus: updateStatusMutation.isPending,
+    updateUserInfo: updateUserInfoMutation.mutate,
+    isUpdatingUserInfo: updateUserInfoMutation.isPending,
+    userInfo: userInfoQuery.data,
+    isLoadingUserInfo: userInfoQuery.isLoading,
   }
 }

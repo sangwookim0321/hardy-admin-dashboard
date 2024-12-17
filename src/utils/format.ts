@@ -82,6 +82,10 @@ export function formatSuccessMessage(status: string): string {
       return '새로운 유저를 생성했습니다.'
     case 'User Status Updated Successfully':
       return '사용자 상태 변경이 완료되었습니다.'
+    case 'User Fetched Successfully':
+      return '사용자 정보 조회 성공!'
+    case 'User Updated Successfully':
+      return '사용자 정보 변경이 완료되었습니다.'
     default:
       return status
   }
@@ -141,6 +145,8 @@ export function formatErrorMessage(status: string): string {
       return '해당 계정은 정지된 상태입니다.'
     case 'Too Many Requests':
       return '너무 많은 요청을 보냈습니다. 잠시 후 다시 시도해주세요.'
+    case 'All Field Data Must Be Provided.':
+      return '필드 데이터를 모두 제공해야합니다.'
     default:
       return status
   }

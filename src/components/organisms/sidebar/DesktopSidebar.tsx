@@ -25,7 +25,7 @@ export default function DesktopSidebar() {
   }
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 flex-shrink-0 h-screen bg-white border-r">
+    <aside className="hidden fixed lg:flex flex-col w-64 flex-shrink-0 h-screen bg-white border-r">
       <div className="flex-1 overflow-y-auto">
         <div className="flex justify-center p-6">
           <Logo width={80} height={80} />

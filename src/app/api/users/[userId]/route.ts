@@ -3,9 +3,9 @@ import { supabase } from '@/lib/supabase/supabase'
 import { verifySession } from '@/app/api/_utils/auth'
 
 // 사용자 삭제
-export async function DELETE(request: NextRequest, context: { params: { userId: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { userId: string } }) {
   try {
-    const userId = await Promise.resolve(context.params.userId)
+    const userId = await Promise.resolve(params.userId)
     // 세션 검증
     const { success, user_role, errorType, error } = await verifySession('super_admin')
 

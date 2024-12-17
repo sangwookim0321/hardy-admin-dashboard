@@ -3,9 +3,9 @@ import { supabase } from '@/lib/supabase/supabase'
 import { verifySession } from '@/app/api/_utils/auth'
 
 // 사용자 상태 변경
-export async function PATCH(request: NextRequest, { params }: { params: { userId: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
-    const userId = await Promise.resolve(params.userId)
+    const { userId } = await params
     // 세션 검증
     const { success, user_id, user_role, errorType, error } = await verifySession('super_admin')
 

@@ -1,15 +1,29 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { usersService } from '@/lib/api/users-api/users-service'
+import { useAuthStore } from '@/store/auth-store/auth-store'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 
 type Role = 'super_admin' | 'admin' | 'guest'
 
 export const useUser = () => {
+  const router = useRouter()
+  const { setUser } = useAuthStore()
+
   // 사용자 목록 조회 query
   const usersQuery = useQuery({
     queryKey: ['users'],
     queryFn: () => usersService.getUsers(),
     select: (response) => response.data,
     staleTime: 1000 * 60 * 5, // 5분 동안은 리페치하지 않음
+  })
+
+  // 사용자 정보 조회 query
+  const userInfoQuery = useQuery({
+    queryKey: ['user-info'],
+    queryFn: () => usersService.getUserInfo({ targetUserId: '' }),
+    select: (response) => response.data,
+    enabled: false, // 자동 실행 비활성화
   })
 
   // 사용자 role 업데이트 mutation
@@ -67,18 +81,37 @@ export const useUser = () => {
       displayName: string
       phone: string
     }) => usersService.updateUserInfo({ targetUserId, email, displayName, phone }),
-    onSuccess: (response) => {
+    onSuccess: async (response, variables) => {
       if (response.success) {
-        usersQuery.refetch()
+        const result = await usersService.getUserInfo({ targetUserId: variables.targetUserId })
+        if (result.success && result.data) {
+          setUser(result.data)
+        }
+        await usersQuery.refetch()
       }
     },
   })
 
-  // 사용자 정보 조회 query
-  const userInfoQuery = useQuery({
-    queryKey: ['user-info'],
-    queryFn: () => usersService.getUserInfo({ targetUserId: '' }),
-    select: (response) => response.data,
+  // 사용자 비밀번호 변경 mutation
+  const updateUserPasswordMutation = useMutation({
+    mutationFn: ({
+      targetUserId,
+      currentPassword,
+      newPassword,
+      newPasswordConfirm,
+      email,
+    }: {
+      targetUserId: string
+      currentPassword: string
+      newPassword: string
+      newPasswordConfirm: string
+      email: string
+    }) => usersService.updateUserPassword({ targetUserId, currentPassword, newPassword, newPasswordConfirm, email }),
+    onSuccess: (response) => {
+      if (response.success) {
+        router.replace('/')
+      }
+    },
   })
 
   return {
@@ -96,5 +129,7 @@ export const useUser = () => {
     isUpdatingUserInfo: updateUserInfoMutation.isPending,
     userInfo: userInfoQuery.data,
     isLoadingUserInfo: userInfoQuery.isLoading,
+    updateUserPassword: updateUserPasswordMutation.mutate,
+    isUpdatingUserPassword: updateUserPasswordMutation.isPending,
   }
 }

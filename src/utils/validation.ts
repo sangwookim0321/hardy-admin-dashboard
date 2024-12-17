@@ -14,6 +14,7 @@ export const validateName = (name: string) => {
 }
 
 export const validatePhone = (phone: string) => {
-  const phoneRegex = /^\d{10,11}$/
-  return phoneRegex.test(phone)
+  const cleaned = phone.replace(/\D/g, '')
+  const phoneRegex = /^\d{10,14}$/
+  return phoneRegex.test(cleaned)
 }

@@ -13,8 +13,8 @@ export default function UserProfile() {
 
   return (
     <div className="flex flex-col items-center px-6 pb-6 border-b">
-      <h2 className="text-lg font-semibold">{user.raw_app_meta_data.displayName}</h2>
-      <p className="text-sm text-gray-500">{formatRoleDisplay(user.raw_app_meta_data.role)}</p>
+      <h2 className="text-lg font-semibold">{user?.display_name}</h2>
+      <p className="text-sm text-gray-500">{formatRoleDisplay(user?.user_role)}</p>
     </div>
   )
 }

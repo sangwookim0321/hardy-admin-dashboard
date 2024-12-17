@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         data: users,
-        message: 'Users Fetched Successfully',
+        message: '',
       },
       { status: 200 }
     )

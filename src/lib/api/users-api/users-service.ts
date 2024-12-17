@@ -99,6 +99,21 @@ interface UserInfoResponse {
   status: number
 }
 
+interface UpdateUserPasswordRequest {
+  targetUserId: string
+  currentPassword: string
+  newPassword: string
+  newPasswordConfirm: string
+  email: string
+}
+
+interface UpdateUserPasswordResponse {
+  success: boolean
+  message?: string
+  error?: string
+  status: number
+}
+
 class UsersService {
   private readonly BASE_URL = '/api/users'
 
@@ -156,6 +171,19 @@ class UsersService {
   async getUserInfo(params: UserInfoRequest): Promise<UserInfoResponse> {
     const { targetUserId } = params
     const response = await api.get<UserInfoResponse>(`${this.BASE_URL}/${targetUserId}`)
+    const { data, status } = response
+    return { ...data, status }
+  }
+
+  // 사용자 비밀번호 변경
+  async updateUserPassword(params: UpdateUserPasswordRequest): Promise<UpdateUserPasswordResponse> {
+    const { targetUserId, currentPassword, newPassword, newPasswordConfirm, email } = params
+    const response = await api.patch<UpdateUserPasswordResponse>(`${this.BASE_URL}/${targetUserId}/password`, {
+      currentPassword,
+      newPassword,
+      newPasswordConfirm,
+      email,
+    })
     const { data, status } = response
     return { ...data, status }
   }

@@ -40,7 +40,7 @@ export function formatDateWithDay(date: Date | string): string {
  * @returns 하이픈이 추가된 휴대폰 번호 (예: '010-1234-5678')
  */
 export function formatPhoneNumber(phone: string | null): string {
-  if (!phone) return '-'
+  if (!phone) return ''
 
   const cleaned = phone.replace(/\D/g, '')
   const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/)
@@ -86,6 +86,8 @@ export function formatSuccessMessage(status: string): string {
       return '사용자 정보 조회 성공!'
     case 'User Updated Successfully':
       return '사용자 정보 변경이 완료되었습니다.'
+    case 'Password Changed Successfully':
+      return '비밀번호 변경이 완료되었습니다. 다시 로그인해주세요.'
     default:
       return status
   }
@@ -147,6 +149,24 @@ export function formatErrorMessage(status: string): string {
       return '너무 많은 요청을 보냈습니다. 잠시 후 다시 시도해주세요.'
     case 'All Field Data Must Be Provided.':
       return '필드 데이터를 모두 제공해야합니다.'
+    case 'You Do Not Have Permission To Modify The Information Of The Other User.':
+      return '다른 사용자의 정보를 변경할 수 없습니다.'
+    case 'Invalid Email Format.':
+      return '잘못된 이메일 형식입니다.'
+    case 'Invalid Display Name Format.':
+      return '잘못된 온라인 이름 형식입니다.'
+    case 'Invalid Phone Number Format.':
+      return '잘못된 휴대폰 번호 형식입니다.'
+    case 'You Must Provide New Password.':
+      return '변경할 비밀번호값이 필요합니다.'
+    case 'New Password And New Password Confirm Do Not Match.':
+      return '변경할 비밀번호가 일치하지 않습니다.'
+    case 'You Must Provide Current Password.':
+      return '현재 비밀번호가 필요합니다.'
+    case 'You Do Not Have Permission To Modify The Password Of The Other User.':
+      return '다른 사용자의 비밀번호를 변경할 수 없습니다.'
+    case 'Your Current Password Is Incorrect Or Your Account Is Invalid':
+      return '현재 비밀번호가 잘못되었거나 잘못된 계정입니다.'
     default:
       return status
   }

@@ -2,7 +2,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { usersService } from '@/lib/api/users-api/users-service'
 import { useAuthStore } from '@/store/auth-store/auth-store'
 import { useRouter } from 'next/navigation'
-import { toast } from 'react-hot-toast'
 
 type Role = 'super_admin' | 'admin' | 'guest'
 

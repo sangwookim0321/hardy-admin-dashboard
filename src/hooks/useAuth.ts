@@ -1,10 +1,7 @@
 // src/hooks/useAuth.ts
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth-store/auth-store'
-import { loginApi } from '@/lib/api/auth-api/login-api'
-import { logoutApi } from '@/lib/api/auth-api/logout-api'
-import { refreshApi } from '@/lib/api/auth-api/refresh-api'
-import { verifyApi } from '@/lib/api/auth-api/verify-api'
+import { authService } from '@/lib/api/auth-api/auth-service'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useAuth = () => {
@@ -20,7 +17,7 @@ export const useAuth = () => {
 
   // 로그인 mutation
   const loginMutation = useMutation({
-    mutationFn: (credentials: { email: string; password: string }) => loginApi.login(credentials),
+    mutationFn: (credentials: { email: string; password: string }) => authService.login(credentials),
     onSuccess: (response) => {
       if (response.success && response.data) {
         setUser(response.data)
@@ -36,7 +33,7 @@ export const useAuth = () => {
 
   // 로그아웃 mutation
   const logoutMutation = useMutation({
-    mutationFn: () => logoutApi.logout(),
+    mutationFn: () => authService.logout(),
     onSuccess: (response) => {
       if (response.success) {
         setUser(null)
@@ -55,7 +52,7 @@ export const useAuth = () => {
 
   // 리프레시 mutation
   const { mutate: refresh } = useMutation({
-    mutationFn: () => refreshApi.refresh(),
+    mutationFn: () => authService.refresh(),
     onError: handleRefreshFailure,
     onSuccess: (response) => {
       if (!response.success) {
@@ -67,7 +64,7 @@ export const useAuth = () => {
   // 인증 확인 query
   const verifyQuery = useQuery({
     queryKey: ['verify'],
-    queryFn: () => verifyApi.verify(),
+    queryFn: () => authService.verify(),
     enabled: false,
     retry: false,
   })

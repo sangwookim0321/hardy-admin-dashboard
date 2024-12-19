@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useLoadingStore } from '@/store/ui-store/loading-store'
 import { toast } from 'react-hot-toast'
-import { refreshApi } from './auth-api/refresh-api'
+import { authService } from './auth-api/auth-service'
 import { formatSuccessMessage, formatErrorMessage } from '@/utils/format'
 
 // API 기본 URL 설정
@@ -48,7 +48,7 @@ const refreshAccessToken = async (originalRequest: any) => {
     originalRequest._retry = true
     isRefreshing = true
 
-    const response = await refreshApi.refresh()
+    const response = await authService.refresh()
 
     if (!response.success) {
       throw new Error(response.error || 'Refresh Failed')

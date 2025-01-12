@@ -62,7 +62,7 @@ export function ProblemList({
 
             <div>
               <p className="mb-1 text-sm font-medium text-gray-700">문제 제목</p>
-              <Input 
+              <Input
                 placeholder="문제 제목을 입력하세요"
                 value={problem.title}
                 onChange={(e) =>
@@ -76,7 +76,7 @@ export function ProblemList({
 
             <div>
               <p className="mb-1 text-sm font-medium text-gray-700">문제 설명 (선택사항)</p>
-              <Textarea 
+              <Textarea
                 placeholder="문제에 대한 설명을 입력하세요"
                 value={problem.description}
                 onChange={(e) =>
@@ -92,8 +92,8 @@ export function ProblemList({
               <p className="mb-1 text-sm font-medium text-gray-700">정답</p>
               {problem.answers.map((answer, answerIndex) => (
                 <div key={answerIndex} className="flex gap-2">
-                  <Input 
-                    placeholder={`정답 ${answerIndex + 1}`} 
+                  <Input
+                    placeholder={`정답 ${answerIndex + 1}`}
                     className="mb-2"
                     value={answer}
                     onChange={(e) => {
@@ -126,11 +126,11 @@ export function ProblemList({
               </Button>
             </div>
 
-            <div>
+            <div className="w-24">
               <p className="mb-1 text-sm font-medium text-gray-700">배점 (선택사항)</p>
-              <Input 
-                type="number" 
-                placeholder="배점" 
+              <Input
+                type="number"
+                placeholder="배점"
                 className="w-32"
                 value={problem.score || ''}
                 onChange={(e) =>

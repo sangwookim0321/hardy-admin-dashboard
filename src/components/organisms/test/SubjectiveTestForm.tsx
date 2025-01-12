@@ -3,6 +3,7 @@
 import { TestBasicInfo, SubjectiveTestBasicInfo } from '@/components/molecules/test/TestBasicInfo'
 import { ProblemList, Problem } from '@/components/molecules/test/ProblemList'
 import { ActionButtons } from '@/components/molecules/test/ActionButtons'
+import { toast } from 'react-hot-toast'
 import { useState } from 'react'
 
 const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -43,7 +44,7 @@ export function SubjectiveTestForm() {
         score: undefined,
       },
     ])
-    // 문제 추가 후 500px 아래로 스크롤
+
     setTimeout(() => {
       window.scrollBy({ top: 500, behavior: 'smooth' })
     }, 100)
@@ -82,17 +83,23 @@ export function SubjectiveTestForm() {
   }
 
   const resetForm = () => {
-    if (window.confirm('작성 중인 내용이 모두 초기화됩니다. 계속하시겠습니까?')) {
-      setBasicInfo(initialBasicInfo)
-      setProblems([{
-        ...initialProblem,
+    setBasicInfo(initialBasicInfo)
+    setProblems([
+      {
         id: generateUniqueId(),
-      }])
-    }
+        number: 1,
+        image: '',
+        title: '',
+        description: '',
+        answers: [''],
+        score: undefined,
+      },
+    ])
+    toast.success('페이지 초기화 완료.')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleSave = () => {
-    // TODO: Implement save functionality
     console.log('Save:', { basicInfo, problems })
   }
 

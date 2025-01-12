@@ -5,11 +5,11 @@ export const getPageTitle = (pathname: string): string => {
     case '/settings':
       return '설정'
     case '/moco/ability-test':
-      return 'Moco 능력 테스트'
+      return '모코 플레이 | 능력고사 테스트'
     case '/moco/subjective-test':
-      return 'Moco 주관식 테스트'
+      return '모코 플레이 | 주관식 테스트'
     case '/moco/type-test':
-      return 'Moco 유형 테스트'
+      return '모코 플레이 | 유형 테스트'
     default:
       return ''
   }

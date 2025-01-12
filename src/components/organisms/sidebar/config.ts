@@ -2,11 +2,11 @@ import { MdDashboard, MdSettings, MdLogout } from 'react-icons/md'
 
 export const projectMenus = [
   {
-    label: 'Moco',
+    label: '모코 플레이',
     href: '/moco',
     children: [
       {
-        label: '능력 테스트',
+        label: '능력고사 테스트',
         href: '/moco/ability-test',
       },
       {

@@ -14,7 +14,7 @@ export function ActionButtons({ onReset, onSave }: ActionButtonsProps) {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t ml-0 lg:ml-64 px-4 lg:px-8 py-4 lg:py-6">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t ml-0 lg:ml-64 px-4 lg:px-8 py-4 lg:py-4">
         <div className="flex justify-end gap-2">
           <Button variant="red" onClick={() => setIsConfirmOpen(true)}>
             취소하기

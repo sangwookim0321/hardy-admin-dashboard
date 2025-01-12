@@ -57,14 +57,8 @@ export function ImageUploader({ image, onImageChange, className = '', label }: I
           </button>
         )}
       </div>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className="hidden"
-      />
-      {label && <span className="text-sm text-gray-500">{label}</span>}
+      <input ref={inputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+      {!image && label && <span className="text-sm text-gray-500">{label}</span>}
     </div>
   )
 }
